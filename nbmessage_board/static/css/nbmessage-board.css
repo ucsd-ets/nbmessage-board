@@ -1,0 +1,19 @@
+.main-border {
+    border-bottom: 1px solid #e2e2e2;
+    padding-bottom: .5em;
+}
+
+.user-fmt {
+    padding-left: .5em;
+    color: #838D95;
+}
+
+.nbmessage-background {
+    padding: .5em;
+    background-color: #E1ECF4;
+}
+
+.nbmessage-thumbnail {
+    padding-left: .5em;
+    padding-top: .5em;
+}

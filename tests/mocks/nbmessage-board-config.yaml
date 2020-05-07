@@ -1,0 +1,5 @@
+add_notification: true
+author: DSMLP Admin
+mode: staging
+publisher_name: Datahub Admin
+tab_title: UCSD ITS Messages
