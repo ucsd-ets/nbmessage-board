@@ -1,30 +1,25 @@
 import os, shutil
+from bs4 import BeautifulSoup
+
 from .etc import Config
+from .message import MessageContainer, Message
+from .markdown import md2html, md2bs4, html2bs4
+from . import APPLICATION_DATA_DIR
 
 class Admin:
-    def __init__(self):
-        self.publish_mode = 'blah'
-
-    def remove_message(self, name):
-        pass
+    def __init__(self, message_board):
+        self.message_board = message_board
+        self.message_container = MessageContainer(self.message_board)
     
-    def get_messages(self):
-        pass
+    @property
+    def messages(self):
+        return self.message_container
     
-    def add_message(self, message_fp):
-        if not os.path.exists(message_fp): raise FileNotFoundError(f'Could not find file at {message_fp}')
-        if not message_fp.endswith('.md'): raise TypeError('File must have .md extension')
+    def save_message_file(self):
+        self.message_container.load()
+        self.message_container.sort()
+        html = self.message_container.render()
         
-        basefile = os.path.basename(message_fp)
+        with open(os.path.join(APPLICATION_DATA_DIR, self.message_board, 'messages.html'), 'w') as f:
+            f.write(html)
         
-        shutil.copyfile(message_fp, f'/etc/nbmessage-board/messages/{basefile}')
-        
-    
-    def remove_all_messages(self):
-        pass
-    
-    def set_tab_title(self, tab_title):
-        if tab_title == '': raise TypeError('tab_title must not be an empty string')
-        
-        c = Config()
-        c.update_config({'tab_title': tab_title})

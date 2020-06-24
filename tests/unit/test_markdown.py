@@ -22,8 +22,5 @@ class TestMarkdown(unittest.TestCase):
         html = md2html(md)
         html.startswith('<h1>')
     
-    def test_render_messages(self):
-        html = render_messages()
-        print(html, '\n\n\n')
-        
-        assert False
+
+    

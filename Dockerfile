@@ -4,12 +4,12 @@ FROM jupyter/datascience-notebook:latest
 
 USER root
 
-RUN mkdir -p /etc/nbmessage-board/{messages,static}
-COPY ./nbmessage_board/static /etc/nbmessage-board/static
-
+# make directories to maintain/configure program state
+RUN mkdir -p /etc/nbmessage-board/admin /var/lib/nbmessage-board/test
+COPY ./nbmessage_board/static /var/lib/nbmessage-board/static
 COPY . /opt/nbmessage-board
-COPY ./tests/mocks/messages /etc/nbmessage-board/messages
 COPY ./tests/mocks/nbmessage-board-config.yaml /etc/nbmessage-board
+
 WORKDIR /opt/nbmessage-board
 
 RUN python3 setup.py bdist_wheel

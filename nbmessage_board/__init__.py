@@ -1,5 +1,13 @@
 import os
 import sys
+from .etc import Config
+__version__ = '0.1.0'
+
+APPLICATION_DATA_DIR = '/var/lib/nbmessage-board'
+CONFIG_DIR = '/etc/nbmessage-board'
+
+_config = Config().config
+DATA_DIR_IGNORE_DIRS = _config['data_dirs_to_ignore']
 
 def _jupyter_nbextension_paths():
     paths = [

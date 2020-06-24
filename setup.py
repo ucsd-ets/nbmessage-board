@@ -25,7 +25,9 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "markdown2",
-        "pyyaml"
+        "pyyaml",
+        "beautifulsoup4",
+        "oo-tools"
     ],
     setup_requires = ['pytest-runner'],
     tests_require = ['pytest'],

@@ -11,9 +11,26 @@
 .nbmessage-background {
     padding: .5em;
     background-color: #E1ECF4;
+    border-radius: 5px;
 }
 
 .nbmessage-thumbnail {
     padding-left: .5em;
     padding-top: .5em;
+}
+
+.nbmessage-h2 {
+    margin-top: 0px;
+}
+
+.nbmessage-board {
+    padding-top: 2em;
+}
+
+#nbmessage-board-admin-content {
+    padding-left: 1em;
+}
+
+.nbmessage-render {
+    padding-left: 1em;
 }
