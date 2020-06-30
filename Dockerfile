@@ -19,6 +19,7 @@ RUN jupyter serverextension enable --sys-prefix --py nbmessage_board
 RUN jupyter nbextension install --sys-prefix --py nbmessage_board
 RUN jupyter nbextension enable --user message/main --section=tree
 RUN jupyter nbextension enable --user admin/main --section=tree
+RUN ln -fs /usr/share/zoneinfo/America/Los_Angeles /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 
 # Chromedriver
 # RUN apt-get update

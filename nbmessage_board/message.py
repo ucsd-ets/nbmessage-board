@@ -1,7 +1,8 @@
 """Object representations of message(s)"""
 
+import os, time
+
 from typing import List
-import os
 from oo_tools.save import Saver
 
 from . import APPLICATION_DATA_DIR
@@ -15,7 +16,7 @@ class Message:
 
     def __init__(self, message_id, body=None, author=None, base_url='/', is_active=True):
         self.author = author
-        self.timestamp = datetime.datetime.now()
+        self.timestamp = datetime.datetime.now().astimezone()
         self.body = body
         self.base_url = base_url
         self.message_id = message_id
@@ -23,7 +24,7 @@ class Message:
     
     @property
     def timestamp_str(self):
-        return self.timestamp.strftime('"%m/%d/%Y, %H:%M:%S"')
+        return self.timestamp.strftime('%a, %b %Y,  %H:%M %p %Z')
 
     def render(self):
         html = md2html(self.body)
