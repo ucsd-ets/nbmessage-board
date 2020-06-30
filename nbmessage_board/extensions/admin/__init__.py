@@ -1,123 +1,98 @@
 from notebook.utils import url_path_join
 from notebook.base.handlers import IPythonHandler
 from tornado import web
-import os, json, functools, logging
+import os, json, logging, datetime
 
-from ...base import get_directories
+from ...base import get_directories, check_xsrf
 from ...utils import *
 from ...markdown import *
 from ...users import Admin
 from ...message import Message, MessageContainer
-
-def check_xsrf(f):
-    @functools.wraps(f)
-    def wrapper(self, *args, **kwargs):
-        _ = self.xsrf_token
-        return f(self, *args, **kwargs)
-    return wrapper
-
-MOUNTED_MESSAGE_BOARDS = get_directories()
+from ...notification import Notification
 
 class AdminHandler(IPythonHandler):
-    # admin = Admin()
-    error_message = ''
-
     @web.authenticated
     @check_xsrf
-    def post(self):
-        """
-        Calculate and return current resource usage metrics
-        """
-        # 1. validate file path
-        # 2. if valid, copy file to dir
-        # 3. validate 2
-        # 4. send ok response and html if true
-        try:
-            body = self.request.body.decode('utf-8')
-            body = parse_body(body)
-
-            response = {}
-            
-            if body['message_operation'] == 'Add':
-                selected_message_board = body['select_message_board']
-                logging.info(f'Creating a message for {selected_message_board}')
-                
-                admin = Admin(selected_message_board)
-                message_id = body['message_id']
-                message_body = body['message_body']
-                author = body['author']
-                base_url = body['base_url']
-                
-                admin.add_message(message_id, message_body, author, base_url)
-                
-                response.update({
-                    'preview_message_html': admin.render_messages()
-                })
-                
-                logging.info(f'Successfully created message for {selected_message_board}')
-
-            # set the title
-            # if body['tabTitle'] != '':
-            #     self.admin.set_tab_title(parse_url_path(body['tabTitle']))
-            
-            # # add a message
-            # if body['messageOperation'] == 'Add':
-            #     self.add_message(body)
-
-            # TODO delete a message
-            
-            # render message back to user only if mode='staging'
-
-            response.update({'status_code': 200})
-            
-            self.set_header('Content-Type', 'application/json')
-            self.write(json.dumps(response))
-
-        except Exception as e:
-            self.set_header('Content-Type', 'application/json')
-            error = json.dumps({'error': str(e), 'message': self.error_message})
-            logging.error(error)
-            self.write(error)
-        
     def get(self):
         yaml = load_yaml('/etc/nbmessage-board/nbmessage-board-config.yaml');
         title = yaml.pop('tab_title')
-        self.write(json.dumps(title))
-    
-    def add_message(self, body):
-        try:
-            filepath = parse_url_path(body['newMessageFilePath'])
-            self.admin.add_message(filepath)
-
-        except Exception as e:
-            self.error_message = str(e)
-            raise Exception('newMessageFilePath')
-
+        self.write(json.dumps(title)) 
 class MessagesHandler(IPythonHandler):
-    @web.authenticated
-    @check_xsrf
-    def post(self, message_board):
-        
-        # check that the directory exists first
-        if message_board not in MOUNTED_MESSAGE_BOARDS:
-            raise web.HTTPError(404, f"Directory = {message_board} doesnt exist!")
-        
-        # breakdown the body
-        body = json.loads(self.request.body.decode('utf-8'))
-        # body = parse_body(body)
-        
-        if body['operation'] == 'add' and body['status'] == 'preview':
-            # preview the message
-            admin = Admin(message_board)
-            message = Message(body['message_id'], body['message_body'], body['author'], base_url='/')
+
+    def _preview_message(self):
+            admin = Admin(self.message_board)
+            message = Message(self.body['message_id'], self.body['message_body'], self.body['author'], base_url='/')
             admin.messages.append(message)
             self.write(admin.messages.render())
-        
-        elif body['operation'] == 'add' and body['status'] == 'submit':
             
+    def _check_notification(self):
+        """check whether a notification needs to be created, if it does, create it. If there's a problem with the inputs,
+        return boolean False, else return True
+
+        Returns:
+            [bool]: False if everything checks out, True otherwise
+        """
+        try:
+            # FIXME vet this logic
+            # NO expiration date specified, but wants notification
+            notify = self.body['set_notification'] == 'on'
+            # if self.body['expiration_date'] != '':
+            #     self.set_status(400)
+            #     self.finish(f'Only specify a date if you want to add a notification')
+            #     return True
+    
+            
+
+            if notify and self.body['expiration_date'] == '':
+                self.set_status(400)
+                self.finish(f'You must specify an expiration date if you want a notification')
+                return True
+
+            if not notify:
+                return False
+            
+            expiration_date = datetime.datetime.strptime(self.body['expiration_date'], '%m/%d/%Y')
+            now = datetime.datetime.now()
+
+                        
+            # expiration date is too low
+            if now > expiration_date:
+                self.set_status(400)
+                self.finish('Expiration date must be greater than the date now')
+                return True
+            
+            notification = Notification(self.message_board, notify=True, expiration_date=expiration_date)
+            notification.save()
+            return False
+        
+        except KeyError:
+            # happens when notify is not set
+            return False
+
+        except ValueError:
+            # it's not a date
+            self.set_status(400)
+            self.finish(f'Date must be a date with format MM/DD/YYYY')
+            
+    def _submit_message(self):
             # update the message object
-            admin = Admin(message_board)
+            body = self.body
+            admin = Admin(self.message_board)
             admin.messages.load_messages()
+            
+            # check message id
+            message_ids = admin.messages.message_ids
+            if body['message_id'] in message_ids:
+                self.set_status(400)
+                self.finish(f"message_id = {body['message_id']} already exist!")
+                return
+            
+            # check if a notification has been requested
+            if self._check_notification():
+                # notification inputs invalid
+                return
+
+            # finally create the message
             message = Message(body['message_id'], body['message_body'], body['author'], base_url='/')
             admin.messages.append(message)
             admin.messages.sort()
@@ -125,23 +100,64 @@ class MessagesHandler(IPythonHandler):
             
             admin.save_message_file()
             self.write(f'message_id = {body["message_id"]} has been saved.')
-
-            
+        
     @web.authenticated
     @check_xsrf
-    def delete(self, subroute):
+    def post(self, message_board):
+        """posting to this server route follows this procedure
+        
+            1. preview the message
+            2. check the form for anything that needs to be checked server side and submit it
+        """
+        
+        # setup variables needed by helper functions
+        body = json.loads(self.request.body.decode('utf-8'))
+        self.message_board = message_board
+        self.body = body
+        
+        # check that the directory exists first
+        message_boards = get_directories()
+        if message_board not in message_boards:
+            raise web.HTTPError(404, f"Directory = {message_board} doesnt exist!")
+
+        if body['operation'] == 'add' and body['status'] == 'preview':
+            # preview
+            self._preview_message()
+        
+        elif body['operation'] == 'add' and body['status'] == 'submit':
+            self._submit_message()
+
+    @web.authenticated
+    @check_xsrf
+    def delete(self, message_board):
         try:
-            print(subroute)
-            print('HERE')
+            body = json.loads(self.request.body.decode('utf-8'))
+            admin = Admin(message_board)
+            result = admin.delete_message(body['message_id'])
+            keys = result.keys()
+            
+            if 'error' in keys:
+                self.write(f'<p class="alert alert-danger">{result["error"]}</p>')
+            
+            else:
+                self.write(f'<p class="alert alert-success">{result["success"]}</p>')
 
         except Exception as e:
             logging.error(e)
             self.write({'error': str(e)})
+    
+    @web.authenticated
+    @check_xsrf
+    def get(self, message_board):
+        admin = Admin(message_board)
+        data = admin.get_messages_for_delete()
+        return self.write(json.dumps(data))
             
 class DirectoryHandler(IPythonHandler):
     @web.authenticated
     def get(self):
-        self.write(json.dumps(MOUNTED_MESSAGE_BOARDS))
+        message_boards = get_directories()
+        self.write(json.dumps(message_boards))
 
 def load_jupyter_server_extension(nbapp):
     """

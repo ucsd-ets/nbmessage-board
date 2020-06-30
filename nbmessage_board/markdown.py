@@ -1,4 +1,5 @@
-""""convert markdown to html"""
+""""convert markdown to html and do other markdown operations"""
+
 from markdown2 import Markdown
 from typing import List
 from dateutil import parser

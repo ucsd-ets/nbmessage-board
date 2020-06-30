@@ -21,7 +21,7 @@ setuptools.setup(
     version='0.1.0',
     url="",
     author="Wesley Uykimpang",
-    description="Discuss what's happening in a jupyter notebook",
+    description="Post messages in a jupyter notebook to other users",
     packages=setuptools.find_packages(),
     install_requires=[
         "markdown2",
@@ -30,8 +30,12 @@ setuptools.setup(
         "oo-tools"
     ],
     setup_requires = ['pytest-runner'],
-    tests_require = ['pytest'],
-    package_data={'nbmessage_board': extension_files,
-                  'nbmessage_board.extensions.message': static_files
-                },
+    tests_require = [
+        'pytest',
+        'selenium'
+    ],
+    package_data={
+        'nbmessage_board': extension_files,
+        'nbmessage_board.extensions.message': static_files
+    },
 )

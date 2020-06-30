@@ -1,3 +1,5 @@
+"""Configuration"""
+
 from .utils import load_yaml
 import yaml
 

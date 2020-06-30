@@ -1,7 +1,7 @@
 """Shared methods or any shared objects/funcs"""
 
 from abc import ABCMeta, abstractproperty
-import os
+import os, functools
 
 from . import APPLICATION_DATA_DIR, DATA_DIR_IGNORE_DIRS
 
@@ -17,3 +17,9 @@ def get_directories():
     
     return items
 
+def check_xsrf(f):
+    @functools.wraps(f)
+    def wrapper(self, *args, **kwargs):
+        _ = self.xsrf_token
+        return f(self, *args, **kwargs)
+    return wrapper

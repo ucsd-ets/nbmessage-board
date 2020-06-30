@@ -1,4 +1,6 @@
-import urllib.parse
+"""One-off functions"""
+
+import urllib.parse, random, string
 
 def load_yaml(path):
     import yaml
@@ -26,3 +28,15 @@ def parse_url_path(url_path):
     reformat = url_path.replace('%2F', '/')
     reformat = reformat.replace('+', ' ')
     return reformat    
+
+def random_string(stringLength=8):
+    """https://pynative.com/python-generate-random-string/
+
+    Args:
+        stringLength (int, optional): length of string. Defaults to 8.
+
+    Returns:
+        str: random string
+    """
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))

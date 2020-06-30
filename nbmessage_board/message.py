@@ -1,3 +1,5 @@
+"""Object representations of message(s)"""
+
 from typing import List
 import os
 from oo_tools.save import Saver

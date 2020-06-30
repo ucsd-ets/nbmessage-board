@@ -6,64 +6,6 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
         </div>
         <div class="col-sm-10" id="nbmessage-messages"></div>
     </div>`
-    // var tabContent = `
-    //     <div id="nbmessage-board" class="tab-pane">
-    //         <div class="container col-md-offset-2">
-    //             <div class="row col-md-8 padding-bottom-sm main-border">
-
-    //                 <h2>My message</h2>
-    //                 <p style="padding-bottom: .5em;">Lorem ipsum dolor sit amet, accusamus tincidunt deterruisset vix ea, mea labores constituto no, at putant civibus vituperata eos. Sed ne dicat cotidieque ullamcorper. Ex qui blandit assueverit, suas vide munere ne per. Ancillae intellegam ut mea, sit cu tritani expetendis, id vis nibh omnis antiopam.
-
-    //                 Sea at animal saperet, vix id erat habeo volumus. Eu admodum offendit recusabo cum, vim ad regione oporteat interpretaris. Ea eos option ceteros, alii verterem appellantur in nam. In enim consequat pro. Congue homero vituperata vix ut.
-                    
-    //                 No his doming maiorum suavitate, elit ocurreret referrentur qui at. Ei pro harum argumentum. Vim facer eleifend an. Ea eius adolescens pro, sea rebum exerci an. Ius sanctus eleifend ut, ad mel veri soleat, alia liber percipit cu quo.
-                    
-    //                 Has et consequat suscipiantur. Modus eripuit detracto cum eu. Homero mucius ea his. Sit te essent suscipit delicata, mea dicunt inciderint ad, meis audire alterum pro no.
-                    
-    //                 No erroribus rationibus mei, vel posse liber efficiendi ut, te cum mnesarchum moderatius omittantur. Vix no habeo nullam utamur, iisque definitionem his ne, duo ne quas cetero signiferumque. Wisi quas usu cu, his movet lobortis dissentias eu. Cu pro vitae labores. Mea ei hinc vide recusabo, at sit paulo tritani docendi, altera oblique est no.</p>
-                
-    //                 <div class="col-xs-4 nbmessage-background">
-    //                     <div class="col-xs-12 user-fmt">
-    //                         <p><i>12/1/2018 @ 1:00PM</i></p>
-    //                     </div>
-    //                     <div class="col-xs-2 nbmessage-thumbnail">
-    //                         <img src="${utils.get_body_data('baseUrl') + 'nbmessage/images/ucsd-0.png'}" class="img-fluid img-thumbnail" alt="...">
-    //                     </div>
-    //                     <div class="col-xs-10" style="padding-top: .3em">
-    //                         <h4 class="user-fmt">Wesley Uykimpang</h4>
-    //                     </div>
-    //                 </div>            
-
-    //             </div>
-
-    //             <div class="row col-md-8 padding-bottom-sm main-border">
-
-    //                 <h2>My message</h2>
-    //                 <p style="padding-bottom: .5em;">Lorem ipsum dolor sit amet, accusamus tincidunt deterruisset vix ea, mea labores constituto no, at putant civibus vituperata eos. Sed ne dicat cotidieque ullamcorper. Ex qui blandit assueverit, suas vide munere ne per. Ancillae intellegam ut mea, sit cu tritani expetendis, id vis nibh omnis antiopam.
-
-    //                 Sea at animal saperet, vix id erat habeo volumus. Eu admodum offendit recusabo cum, vim ad regione oporteat interpretaris. Ea eos option ceteros, alii verterem appellantur in nam. In enim consequat pro. Congue homero vituperata vix ut.
-                    
-    //                 No his doming maiorum suavitate, elit ocurreret referrentur qui at. Ei pro harum argumentum. Vim facer eleifend an. Ea eius adolescens pro, sea rebum exerci an. Ius sanctus eleifend ut, ad mel veri soleat, alia liber percipit cu quo.
-                    
-    //                 Has et consequat suscipiantur. Modus eripuit detracto cum eu. Homero mucius ea his. Sit te essent suscipit delicata, mea dicunt inciderint ad, meis audire alterum pro no.
-                    
-    //                 No erroribus rationibus mei, vel posse liber efficiendi ut, te cum mnesarchum moderatius omittantur. Vix no habeo nullam utamur, iisque definitionem his ne, duo ne quas cetero signiferumque. Wisi quas usu cu, his movet lobortis dissentias eu. Cu pro vitae labores. Mea ei hinc vide recusabo, at sit paulo tritani docendi, altera oblique est no.</p>
-                
-    //                 <div class="col-xs-4 nbmessage-background">
-    //                     <div class="col-xs-12 user-fmt">
-    //                         <p><i>12/1/2018 @ 1:00PM</i></p>
-    //                     </div>
-    //                     <div class="col-xs-2 nbmessage-thumbnail">
-    //                         <img src="${utils.get_body_data('baseUrl') + 'nbmessage/images/ucsd-0.png'}" class="img-fluid img-thumbnail" alt="...">
-    //                     </div>
-    //                     <div class="col-xs-10" style="padding-top: .3em">
-    //                         <h4 class="user-fmt">Wesley Uykimpang</h4>
-    //                     </div>
-    //                 </div>            
-                    
-    //             </div>
-    //         </div>
-    //     </div>`
 
     class MessageBoardsPill {
         constructor(appState) {
@@ -71,16 +13,16 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                 var directories = JSON.parse(data);
                 directories.forEach(function(directory, index) {
                     if (index === 0) {
-                        $('#nbmessage-boards').append(`<li role="presentation" class="active"><a href="#">${directory}</a></li>`)
+                        $('#nbmessage-boards').append(`<li role="presentation" class="nbmessage-pill active"><a href="#">${directory}</a></li>`)
                         appState.updateState({selectedMessageBoard: directory});
                     } else {
-                        $('#nbmessage-boards').append(`<li role="presentation" class="nbmessage-pill"><a href="#">${directory}</a></li>`)
+                        $('#nbmessage-boards').append(`<li role="presentation" class="nbmessage-pill"><a href="#">${directory}</a></li>`);
                     }
                 });
             
                 $('.nbmessage-pill').click(function() {
                     var selectedTabname = $(this).text();
-                    appState.updateState({selectedMessageboard: selectedTabname});
+                    appState.updateState({selectedMessageBoard: selectedTabname});
                     that.removeActive();
                     $(this).addClass('active');
                 });
@@ -96,7 +38,6 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
         removeActive() {
             $('.nbmessage-pill').removeClass('active');
         }
-
     }
 
     class Messages {
@@ -110,13 +51,15 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
 
             $.get(utils.get_body_data('baseUrl') + 'nbmessage/render/' + messageBoard, function(data) {
                 data = JSON.parse(data);
-                
-                // only update the html if it doesnt exist
-                if (!that.messagesHTML) {
+
+                // only update the html if doesn't match and remove old/append new message
+                if (that.messagesHTML !== data.html) {
                     that.messagesHTML = data.html;
+                    $('#nbmessage-messages').empty();
                     $('#nbmessage-messages').append(that.messagesHTML);
                 }
-            }).fail(function() { });
+            }).fail(function() { })
+            .catch(function(e) { });
         }
 
     }
@@ -124,17 +67,24 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
     class MessageState {
         constructor() {
             this.state = {
-                selectedMessageBoard: null
+                selectedMessageBoard: null,
+                createCookie: false,
+                expirationDate: null,
+                cookieValue: null
             }
             this.stateListeners = [];
         }
 
-        updateState(obj) {
+        updateState(obj, endSet={}) {
             this.state = Object.assign(this.state, obj);
             var that = this;
             this.stateListeners.forEach(function(listener) {
                 listener.update(that.state);
             });
+
+            // do a final state update that doesn't inform the listeners after the
+            // listeners have been updated
+            this.state = Object.assign(this.state, endSet);
         }
 
         registerStateListener(stateListener) {
@@ -142,32 +92,117 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
         }
     }
 
+    class Notification {
+        constructor(appState) {
+            this.notify = false;
+            this.html = `<sup><span><img id="nbmessage-envelope" src="${utils.get_body_data('baseUrl') + 'nbmessage/images/envelope.svg'}"/></span></sup>`;
+            this.appState = appState;
+        }
+
+        createCookie(messsageBoard) {
+            var that = this;
+            $.get(utils.get_body_data('baseUrl') + 'nbmessage/notify/' + messsageBoard, function(data) {
+                data = JSON.parse(data);
+                var cookie = new MessageBoardCookie();
+                var cookieExists = cookie.exists();
+                var cookieValues = cookie.getCookie();
+                var cookieId = cookieValues[0];
+    
+                if (data.notify && !cookieExists) {
+                    // CLEAN CASE, NOTHING HAS BEEN SET: cookie doesn't exist and we want it
+                    cookie.setCookie(data.notification_id, data.expiration_date);
+                    that.appendHTML();
+                }
+                else if (data.notify && cookieId !== data.notification_id) {
+                    // a NEW notification has been set while the old cookie is still technically active
+                    cookie.setCookie(data.notification_id, data.expiration_date);
+                    that.appendHTML();
+                }
+            });
+        }
+
+        modifyNotification() {
+            // click listener
+            this.removeHTML();
+        }
+
+        appendHTML() {
+            if ($('#nbmessage-envelope').length === 0) {
+                $('#nbmessage-board-tab').append(this.html);
+            }
+        }
+
+        removeHTML() {
+            $('#nbmessage-envelope').remove();
+        }
+
+        update(newState) {
+            if (newState.clicked) {
+                this.modifyNotification();
+            }
+            this.createCookie(newState.selectedMessageBoard);
+        }
+    }
+
+    class MessageBoardCookie {
+    
+        setCookie(notifyUser, expirationDate) {
+            document.cookie = `nbmessage-notify=${notifyUser}; expires=${expirationDate}`;
+        }
+
+        getCookie() {
+            var name = 'nbmessage-notify' + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+              var c = ca[i];
+              while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+              }
+              if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length).split('-');
+              }
+            }
+            return "";
+        }
+
+        exists() {
+            if (this.getCookie() === '') {
+                return false;
+            }
+            return true;
+        }
+
+        remove() {
+            document.cookie = `nbmessage-notify=; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+        }
+
+    }
 
     var load_ipython_extension = function () {
-        // add custom css
+        // add custom css/js
         $('head').append(`<link rel="stylesheet" type="text/css" href="${utils.get_body_data('baseUrl') + 'nbmessage/css/nbmessage-board.css'}">`);
-        
+        $('head').append(`<link rel="stylesheet" type="text/css" href="${utils.get_body_data('baseUrl') + 'nbmessage/css/bootstrap-datepicker.min.css'}">`);
+
         // set the tab title, everything must take place once the tab is established
         $.get(utils.get_body_data('baseUrl') + 'nbmessage/admin', function(data) {
             var messageState = new MessageState();
             var title = JSON.parse(data);
-            $('#tabs').append(`<li><a href="#nbmessage-board" id="nbmessage-board-tab" data-toggle="tab">${title}</a></li>`)
+            $('#tabs').append(`<li ><a href="#nbmessage-board" id="nbmessage-board-tab" data-toggle="tab">${title}</a></li>`)
             $('.tab-content').append(tabContent);
 
-            // set listener on tab
+            // set listener on tab click
             $('#nbmessage-board-tab').click(function() {
-                messageState.updateState({'clicked': true});
+                messageState.updateState({'clicked': true}, endSet={'clicked': false});
             });
             var messageBoardPill = new MessageBoardsPill(messageState);
             var messages = new Messages();
-    
+            var notification = new Notification(messageState);
+
             messageState.registerStateListener(messages);
+            messageState.registerStateListener(notification);
 
         });
-
-
-
-
     };
 
     return {

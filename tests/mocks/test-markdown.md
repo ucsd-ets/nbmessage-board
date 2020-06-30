@@ -1,7 +1,3 @@
-# Some title
+# Test
 
-Hello there
-
-## Some subheading
-
-A subheading
+This is a test file for unit testing

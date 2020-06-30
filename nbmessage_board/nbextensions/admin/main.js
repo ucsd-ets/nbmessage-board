@@ -1,4 +1,4 @@
-define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
+define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], function ($, utils, require) {
 
     // following variables define page elements
 
@@ -68,8 +68,8 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             this.appState = appState;
 
             this.render();
-
-            $('#select-message-board').change(function() {
+            
+            $(document).on('change', '#select-message-board', function() {
                 appState.updateState({selectedMessageBoard: $(this).val()})
             });
         }
@@ -110,13 +110,42 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
         constructor(appState) {
             this.form = `
                 <div class="form-group" id="nbmessage-operation-group">
-                    <h2 class="nbmessage-h2">Select an operation to perform on course messages</h2>
                     <label for="message-operation">Message operation</label>
                     <select class="form-control" id="nbmessage-operation" name="message_operation">
                         <option>Add</option>
                         <option>Delete</option>
                     </select>
                 </div>
+                <div id="preview-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg" style="width:60em;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Preview</h4>
+                            </div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                            <button type="button" id='save-message' class="btn btn-default" data-dismiss="modal">Save</button>
+                            <button type="button" id='close-modal' class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="submit-modal" class="modal fade" role="dialog">
+                <div class="modal-dialog modal-lg" style="width:60em;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Server Response</h4>
+                            </div>
+                            <div class="modal-body"></div>
+                            <div class="modal-footer">
+                            <button type="button" id='close-modal' class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             `
 
             this.addform = `
@@ -138,53 +167,36 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                         </div>
 
                         <div class="form-check" id="set-notification">
-                            <input type="checkbox" class="form-check-input"  name="setNotification">
-                            <label class="form-check-label" for="setNotification">Add Notification</label>
+                            <input type="checkbox" class="form-check-input"  name="set_notification">
+                            <label class="form-check-label" for="set_notification">Add Notification</label>
                         </div>
+
+                        <div class="form-group">
+                            <label for="expiration_date">Set an expiration date for the notification (if applicable)</label>
+                            <input type="text" class="form-control" id="datepicker" name="expiration_date">      
+                        </div>
+
                         <input name="status" type="hidden" value="preview">
                         <input name="operation" type="hidden" value="add">
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
-
-                    <div id="preview-modal" class="modal fade" role="dialog">
-                        <div class="modal-dialog modal-lg" style="width:60em;">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Previewed Messages</h4>
-                                    </div>
-                                    <div class="modal-body"></div>
-                                    <div class="modal-footer">
-                                    <button type="button" id='save-message' class="btn btn-default" data-dismiss="modal">Save</button>
-                                    <button type="button" id='close-modal' class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="submit-modal" class="modal fade" role="dialog">
-                        <div class="modal-dialog modal-lg" style="width:60em;">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Server Response</h4>
-                                    </div>
-                                    <div class="modal-body"></div>
-                                    <div class="modal-footer">
-                                    <button type="button" id='close-modal' class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             `
 
             this.deleteform = `
                 <div class="nbmessage-form-group">
-                    <div class="form-group" id="delete-message">
-                        <label for="message-operation">Delete a message</label>
-                        <select class="form-control" id="delete-message" name="delete-message"></select>
-                    </div>
+                    <form id="nbmessage-admin-delete" method="delete">
+                        <div class="nbmessage-form-group">
+                            <div class="form-group" id="delete-message">
+                                <label for="message-operation">Delete a message</label>
+                                <select class="form-control" id="delete-message" name="message_id"></select>
+                            </div>
+                            <div id="nbmessage-rendered"></div>
+                        </div>
+                        <br/>
+                        <input name="operation" type="hidden" value="delete">
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </form>
                 </div>
             `
 
@@ -213,14 +225,60 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             $('.nbmessage-form-group').remove();
         }
 
+        setupFormDelete() {
+            var that = this;
+            $('#nbmessage-admin-delete').off('submit');
+            $('#save-message').off('click');
+
+            $('#nbmessage-admin-delete').submit(function(event) {
+                event.preventDefault();
+                var form = $(this);
+                var rawFormData = form.serializeArray();
+                var formData = {};
+                $(rawFormData).each(function(index, obj){
+                    formData[obj.name] = obj.value;
+                });
+
+                $('.modal-body').empty();
+                $('.modal-body').append(`<p class="alert alert-warning">Are you sure you want to delete message ID = ${formData.message_id}?</p>`);
+                $('#preview-modal').modal('show');
+
+                $('#save-message').click(function() {
+                    $.ajax({
+                        type: form.attr('method'),
+                        url: utils.get_body_data('baseUrl') + `nbmessage/messages/${that.selectedMessageBoard}`,
+                        headers: {'X-CSRFToken': getCookie("_xsrf")},
+                        data: JSON.stringify(formData)
+                        // data: form.serialize()
+                    }).done(function(template) {
+                        // Optionally alert the user of success here...
+                        $('.modal-body').empty();
+                        $('.modal-body').append(template);
+                        $('#submit-modal').modal('show');
+
+                        // launch modal
+                    }).fail(function(err) {
+                        // Optionally alert the user of an error here...
+                        $('.modal-body').empty();
+                        $('.modal-body').append(`<p class="alert alert-warning">${err.responseText}</p>`);
+                        $('#preview-modal').modal('show');
+                    });
+                });
+            });
+        }
+
         setupFormSubmit() {
             var that = this;
+            // remove event handlers that may be lingering
             $('#nbmessage-admin').off('submit');
+            // $('#save-message').off('click');
+
+
             $('#nbmessage-admin').submit(function(event) {
+        
                 event.preventDefault();
                 var form = $(this);
     
-                // // pass data to app state
                 var rawFormData = form.serializeArray();
                 var formData = {};
                 $(rawFormData).each(function(index, obj){
@@ -236,42 +294,74 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                     // data: form.serialize()
                   }).done(function(template) {
                     // Optionally alert the user of success here...
+                    console.log(template);
                     $('.modal-body').empty();
                     $('.modal-body').append(template);
                     $('#preview-modal').modal('show');
 
                     // launch modal
-                  }).fail(function(data) {
+                  }).fail(function(err) {
                     // Optionally alert the user of an error here...
-                    console.log('failure');
-                    console.log(data);
+                    $('.modal-body').empty();
+                    $('.modal-body').append(`<p class="alert alert-warning">${err.responseText}</p>`);
+                    $('#preview-modal').modal('show');
                 });
                 
                 // SUBMITTED MESSAGE
                 $('#save-message').click(function() {
                     formData.status = 'submit';
                     formData.operation = 'add';
-
+                    
                     $.ajax({
                         type: form.attr('method'),
                         url: utils.get_body_data('baseUrl') + `nbmessage/messages/${that.selectedMessageBoard}`,
                         headers: {'X-CSRFToken': getCookie("_xsrf")},
                         data: JSON.stringify(formData)
-                      }).done(function(template) {
-                        // Optionally alert the user of success here...
+                      }).done(function(responseMessage) {
+                        // success modal
                         $('.modal-body').empty();
-                        $('.modal-body').append(template);
+                        $('.modal-body').append(`<p class="alert alert-success">${responseMessage}</p>`);
                         $('#submit-modal').modal('show');
-                        // launch modal
-                      }).fail(function(data) {
-                        // Optionally alert the user of an error here...
-                        console.log('failure');
-                        console.log(data);
+
+                    }).fail(function(err) {
+                        // failure modal, could not save or something
+                        $('.modal-body').empty();
+                        $('.modal-body').append(`<p class="alert alert-warning">${err.responseText}</p>`);
+                        $('#submit-modal').modal('show');
+
                     });
                 });
             });
-    
+        }
 
+        getDeleteInfo() {
+            var that = this;
+            $.get(utils.get_body_data('baseUrl') + `nbmessage/messages/${this.selectedMessageBoard}`, function(data) {
+                var messageInfo = JSON.parse(data);
+                var messageInfoLength = Object.keys(messageInfo).length;
+
+                var i = 0;
+                for (var messageId in messageInfo) {
+                    if (i === messageInfoLength - 1) {
+                        $('#delete-message>select').append(`<option selected>${messageId}</option>`);
+                        that.addDeleteMessage(messageInfo, messageId);
+                    } else {
+                        $('#delete-message>select').append(`<option>${messageId}</option>`);
+                    }
+                    i++;
+                }
+
+                $(document).on('change', '#delete-message>select', function() {
+                    var selectedMessageId = $(this).val();
+                    that.addDeleteMessage(messageInfo, selectedMessageId);
+                });
+            });
+        }
+
+        addDeleteMessage(messageInfo, messageId) {
+            var body = messageInfo[messageId];
+            $('#nbmessage-rendered').empty();
+            $('#nbmessage-rendered').append(body);
         }
 
         showSubform(messageOperation) {
@@ -281,17 +371,14 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             switch(messageOperation) {
                 case 'Add':
                     $('#nbmessage-operation-group').after(this.addform);
+                    $('#datepicker').datepicker('getFormattedDate');    
                     this.setupFormSubmit();
                     break;
 
                 case 'Delete':
                     $('#nbmessage-operation-group').after(this.deleteform);
-                    $.get(utils.get_body_data('baseUrl') + `nbmessage/${this.selectedMessageBoard}/messages`, function(data) {
-                        var messages = JSON.parse(data);
-                        messages.forEach(function(message) {
-                            $('#delete-message>select').append(`<option>${message}</option>`)
-                        });
-                    });
+                    this.getDeleteInfo();
+                    this.setupFormDelete();
                     break;
             }
         }
@@ -351,7 +438,9 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
         // Add Main Components
         $('#tabs').append(tab);
         $('.tab-content').append(tabContent);
-        // $('#message-operation-group').after(addDomEl); 
+
+        // 
+
 
         /** Class initializations */
         var appState = new AppState();
@@ -371,6 +460,7 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             var title = JSON.parse(data);
             $('#tab-title>input').attr("placeholder", title)
         });
+        
         // todo add a spinner on click
     };
 
