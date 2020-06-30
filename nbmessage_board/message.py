@@ -14,13 +14,14 @@ import datetime, abc, logging
 class Message:
     """Object representation of a message"""
 
-    def __init__(self, message_id, body=None, author=None, base_url='/', is_active=True):
+    def __init__(self, message_id, body=None, author=None, base_url='/', is_active=True, color_scheme='nbmessage-default'):
         self.author = author
         self.timestamp = datetime.datetime.now().astimezone()
         self.body = body
         self.base_url = base_url
         self.message_id = message_id
         self.is_active = is_active
+        self.color_scheme = color_scheme
     
     @property
     def timestamp_str(self):
@@ -28,7 +29,7 @@ class Message:
 
     def render(self):
         html = md2html(self.body)
-        html = decorate_message(html, self.author, self.timestamp_str, self.base_url)
+        html = decorate_message(html, self.author, self.timestamp_str, self.base_url, self.color_scheme)
         return html
 
 

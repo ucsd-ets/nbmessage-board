@@ -21,7 +21,7 @@ class MessagesHandler(IPythonHandler):
 
     def _preview_message(self):
             admin = Admin(self.message_board)
-            message = Message(self.body['message_id'], self.body['message_body'], self.body['author'], base_url='/')
+            message = Message(self.body['message_id'], self.body['message_body'], self.body['author'], base_url='/', color_scheme=f'nbmessage-{self.body["color_scheme"].lower()}')
             admin.messages.append(message)
             self.write(admin.messages.render())
             
@@ -93,7 +93,8 @@ class MessagesHandler(IPythonHandler):
                 return
 
             # finally create the message
-            message = Message(body['message_id'], body['message_body'], body['author'], base_url='/')
+            message = Message(body['message_id'], body['message_body'], body['author'], base_url='/', color_scheme=f'nbmessage-{body["color_scheme"].lower()}')
+            print(message.color_scheme)
             admin.messages.append(message)
             admin.messages.sort()
             admin.messages.save()

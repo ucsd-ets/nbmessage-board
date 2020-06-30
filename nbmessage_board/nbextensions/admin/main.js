@@ -176,6 +176,29 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                             <input type="text" class="form-control" id="datepicker" name="expiration_date">      
                         </div>
 
+                        <div class="form-group">
+                            <p>Select a color scheme for footer</p>
+                            <select id="color-scheme" class="form-control" name="color_scheme">
+                                <option>Default</option>
+                                <option>Navy</option>
+                                <option>Blue</option>
+                                <option>Aqua</option>
+                                <option>Teal</option>
+                                <option>Olive</option>
+                                <option>Green</option>
+                                <option>Lime</option>
+                                <option>Yellow</option>
+                                <option>Orange</option>
+                                <option>Red</option>
+                                <option>Maroon</option>
+                                <option>Fuchsia</option>
+                                <option>Purple</option>
+                                <option>Black</option>
+                                <option>Gray</option>
+                                <option>Silver</option>
+                            </select>
+                        </div>
+
                         <input name="status" type="hidden" value="preview">
                         <input name="operation" type="hidden" value="add">
                         <button type="submit" class="btn btn-default">Submit</button>
