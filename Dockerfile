@@ -6,12 +6,14 @@ USER root
 
 # make directories to maintain/configure program state
 RUN mkdir -p /etc/nbmessage-board/admin /var/lib/nbmessage-board/{test,mboard}
+
 COPY ./nbmessage_board/static /var/lib/nbmessage-board/static
 COPY . /opt/nbmessage-board
 COPY ./tests/mocks/nbmessage-board-config.yaml /etc/nbmessage-board
 
 WORKDIR /opt/nbmessage-board
 
+# install nbmessage-board
 RUN python3 setup.py bdist_wheel
 RUN pip install dist/*.whl
 
@@ -42,3 +44,6 @@ RUN apt-get install iputils-ping
 RUN useradd -ms /bin/bash user1
 RUN useradd -ms /bin/bash user2
 RUN useradd -ms /bin/bash user3
+
+# for testing, only root can modify both message boards (at least by default)
+RUN chmod -R 0744 /var/lib/nbmessage-board 

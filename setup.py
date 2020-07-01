@@ -19,12 +19,16 @@ for (dirname, dirnames, filenames) in os.walk("nbmessage_board/extensions/messag
 setuptools.setup(
     name="nbmessage_board",
     version='0.1.0',
-    url="",
+    url="https://github.com/ucsd-ets/nbmessage-board",
     author="Wesley Uykimpang",
     description="Post messages in a jupyter notebook to other users",
+    classifiers=[
+        "Operating System :: POSIX :: Linux",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education"
+    ],
     packages=setuptools.find_packages(),
     install_requires=[
-        "markdown2",
         "pyyaml",
         "beautifulsoup4",
         "oo-tools",
