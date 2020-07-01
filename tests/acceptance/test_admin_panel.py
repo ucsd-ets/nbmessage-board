@@ -1,4 +1,4 @@
-import unittest, os, subprocess, time, datetime
+import unittest, os, subprocess, time, datetime, random, string
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,8 +10,7 @@ from bs4 import BeautifulSoup
 
 from . import get_driver
 
-class TestAdminPanel(unittest.TestCase):
-
+class BaseAcceptanceTester(unittest.TestCase):
     def setUp(self):
         self.proc = subprocess.Popen(['jupyter', 'notebook', '--allow-root', '--ip', '0.0.0.0', '--NotebookApp.token=""'])
         self.driver = get_driver()
@@ -32,7 +31,7 @@ class TestAdminPanel(unittest.TestCase):
     
 ##### HELPER FUNCTIONS
     def create_message(self, board, author, body, m_id, close=True, add_notification=False, expiration_date='06/10/2020'):
-        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'UCSD ITS Messages (Admin)')))
+        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessage-board (Admin)')))
         admin_tab.click()
         
         # make sure we select a message board first
@@ -69,18 +68,21 @@ class TestAdminPanel(unittest.TestCase):
             
 
         # submit, save, and close
-        submit_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="nbmessage-admin"]/button')))
+        # (By.XPATH, '//*[@id="nbmessage-admin"]/button')
+        submit_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#nbmessage-admin>button')))
         submit_el.click()
 
         time.sleep(1)
 
-        save_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH, '//*[@id="save-message"]')))
+        # (By.XPATH, '//*[@id="save-message"]')
+        save_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'save-message')))
         save_el.click()
 
         time.sleep(1)
         
         if close:
-            close_el = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.XPATH, "(//button[@id='close-modal'])[2]")))
+            # (By.XPATH, "(//button[@id='close-modal'])[3]")
+            close_el = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'close-modal')))
             close_el.click()
             time.sleep(1)
 
@@ -89,7 +91,7 @@ class TestAdminPanel(unittest.TestCase):
         soup = BeautifulSoup(source, 'html.parser')
         return soup
 
-##### POSITIVE TEST CODE
+class TestGeneralFeatures(BaseAcceptanceTester):
     def test_host(self):
         self.driver.get('http://127.0.0.1:8888')
         assert self.driver.title == 'Home Page - Select or create a notebook'
@@ -100,7 +102,7 @@ class TestAdminPanel(unittest.TestCase):
         assert True
 
     def test_global_can_select_multiple(self):
-        admin_tab = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.LINK_TEXT, 'UCSD ITS Messages (Admin)')))
+        admin_tab = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessage-board (Admin)')))
         admin_tab.click()
 
         select_board = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'select-message-board')))
@@ -116,7 +118,8 @@ class TestAdminPanel(unittest.TestCase):
 
         assert found_test
         assert found_mboard
-        
+
+class TestMessageCreationSystem(BaseAcceptanceTester):
     def test_create_message(self):
         body = """# What is Lorem Ipsum
         
@@ -252,8 +255,46 @@ class TestAdminPanel(unittest.TestCase):
 
         self.create_message(self.board1, author1, body1, id_1, add_notification=True, expiration_date=expiration) # expiration date
         
+    def test_add_multiple_notifications(self):
+        letters = string.ascii_lowercase
+        message_boards = ['test', 'mboard']
+        messages_in_board = [0, 0]
         
-# TODO create a multi test with multi message
+        for i in range(10):
+            # 2 paragraphs essentially
+            body = ''.join(random.choice(letters) for i in range(300))
+            body = body + '\n<br/>' + ''.join(random.choice(letters) for i in range(300))
+            
+            author = ''.join(random.choice(letters) for i in range(20))
+            message_id = ''.join(random.choice(letters) for i in range(10))
+            
+            board = random.randint(0, 1)
+            message_board = message_boards[board]
+            
+            self.create_message(message_board, author, body, message_id)
+            messages_in_board[board] += 1
+        
+        announcements = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'Announcements')))
+        announcements.click()
+        
+        mboard_tab = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.LINK_TEXT, 'mboard')))
+        mboard_tab.click()
+        mboard_tab.click()
+        
+        soup = self.get_soup()
+        mboard_messages = len(soup.select('.nbmessage-border'))
+        assert mboard_messages == messages_in_board[1]
+        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-mboard-multi.png')
+        
+        test_tab = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.LINK_TEXT, 'test')))
+        test_tab.click()
+        test_tab.click()
+        
+        soup = self.get_soup()
+        test_messages = len(soup.select('.nbmessage-border'))
+        assert test_messages == messages_in_board[0]
+        
+        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-test-multi.png')
     
 ##### NEGATIVE TEST CODE
     def test_add_message_with_same_id_fails(self):

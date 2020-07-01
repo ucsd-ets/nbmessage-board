@@ -200,6 +200,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
 
                         <input name="status" type="hidden" value="preview">
                         <input name="operation" type="hidden" value="add">
+                        <input name="base_url" type="hidden" value="${utils.get_body_data('baseUrl')}">
                         <button type="submit" class="btn btn-default">Submit</button>
                     </form>
                 </div>
@@ -353,7 +354,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                         }).fail(function(err) {
                             // failure modal, could not save or something
                             $('.modal-body').empty();
-                            $('.modal-body').append(`<p class="alert alert-warning">${err.responseText}</p>`);
+                            $('.modal-body').append(`<p class="alert alert-danger">${err.responseText}</p>`);
                             $('#submit-modal').modal('show');
 
                         });

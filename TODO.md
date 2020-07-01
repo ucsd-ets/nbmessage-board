@@ -1,15 +1,8 @@
 # TODO
 
-
-
 - Test against directory permissions
 - Test against direct write
-
-
-
 - Improve logging
-
-- fix baseurl
 
 ## Done
 
@@ -20,3 +13,4 @@
 - Clean up CSS
 - color picker implemented
 - fix spacing in body
+- fix baseurl

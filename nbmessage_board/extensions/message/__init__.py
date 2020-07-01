@@ -31,7 +31,6 @@ class Notify(IPythonHandler):
     @web.authenticated
     @check_xsrf
     def get(self):
-        mounted_directories = get_directories()        
         basic = Basic()
         notification = basic.get_youngest_notification()
         self.write(json.dumps(notification))        

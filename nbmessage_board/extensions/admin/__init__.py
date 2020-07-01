@@ -21,7 +21,13 @@ class MessagesHandler(IPythonHandler):
 
     def _preview_message(self):
             admin = Admin(self.message_board)
-            message = Message(self.body['message_id'], self.body['message_body'], self.body['author'], base_url='/', color_scheme=f'nbmessage-{self.body["color_scheme"].lower()}')
+            message = Message(self.body['message_id'], 
+                              self.body['message_body'], 
+                              self.body['author'], 
+                              base_url=self.body['base_url'], 
+                              color_scheme=f'nbmessage-{self.body["color_scheme"].lower()}'
+                              )
+    
             admin.messages.append(message)
             self.write(admin.messages.render())
             
@@ -75,6 +81,7 @@ class MessagesHandler(IPythonHandler):
             self.finish(f'Date must be a date with format MM/DD/YYYY')
             
     def _submit_message(self):
+        try:
             # update the message object
             body = self.body
             admin = Admin(self.message_board)
@@ -101,6 +108,10 @@ class MessagesHandler(IPythonHandler):
             
             admin.save_message_file()
             self.write(f'message_id = {body["message_id"]} has been saved.')
+        
+        except PermissionError:
+            self.set_status(400)
+            self.finish(f'You dont have permissions to create messages for message board = {self.message_board}')
         
     @web.authenticated
     @check_xsrf

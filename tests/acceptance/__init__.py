@@ -7,6 +7,6 @@ def get_driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--window-size=1920,1080")
-    driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', chrome_options=chrome_options)
+    driver = webdriver.Chrome(executable_path='/usr/bin/chromedriver', options=chrome_options)
 
     return driver
