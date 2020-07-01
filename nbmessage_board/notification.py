@@ -25,9 +25,18 @@ class Notification(Saver):
             raise TypeError('expiration_date must be datetime')
         
         self._expiration_date = expiration_date
+        
+    @property
+    def base_datetime_format(self):
+        return '%a, %d %b %Y'
+    
+    @property
+    def full_datetime_format(self):
+        return '%a, %d %b %Y %X %Z'
     
     def __iter__(self):
         yield 'notify', self.notify
         yield 'message_board', self.message_board
         yield 'expiration_date', self.expiration_date.strftime('%a, %d %b %Y') + ' 12:00:00 UTC'
         yield 'notification_id', self.notification_id
+        yield 'datetime_format', self.full_datetime_format

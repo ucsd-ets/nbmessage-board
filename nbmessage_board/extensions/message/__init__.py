@@ -30,14 +30,10 @@ class ShowMessage(IPythonHandler):
 class Notify(IPythonHandler):
     @web.authenticated
     @check_xsrf
-    def get(self, message_board):
-        mounted_directories = get_directories()
-        
-        if not message_board in mounted_directories:
-            raise web.HTTPError(404, f"Directory = {message_board} doesnt exist!")
-        
-        basic = Basic(message_board)
-        notification = basic.get_notification()
+    def get(self):
+        mounted_directories = get_directories()        
+        basic = Basic()
+        notification = basic.get_youngest_notification()
         self.write(json.dumps(notification))        
 
 def load_jupyter_server_extension(nbapp):
@@ -47,6 +43,6 @@ def load_jupyter_server_extension(nbapp):
     route_pattern = url_path_join(nbapp.web_app.settings['base_url'], '/nbmessage')
     nbapp.web_app.add_handlers('.*', [
         (url_path_join(route_pattern, r'/render/(\w+)'), ShowMessage),
-        (url_path_join(route_pattern, r'/notify/(\w+)'), Notify)
+        (url_path_join(route_pattern, r'/notify'), Notify)
     ])
     nbapp.web_app.add_handlers('.*', [(route_pattern + '/(.*)', web.StaticFileHandler, {'path': f'{APPLICATION_DATA_DIR}/static/'})])

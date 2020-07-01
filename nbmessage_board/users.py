@@ -1,13 +1,13 @@
 """Facades/Composites for handling server operations"""
 
-import os, shutil, json
+import os, shutil, json, datetime
 from bs4 import BeautifulSoup
 
 from .etc import Config
 from .message import MessageContainer, Message
 from .markdown import md2html, md2bs4, html2bs4
 from .notification import Notification
-
+from .base import get_directories
 from . import APPLICATION_DATA_DIR
 
 class Admin:
@@ -61,15 +61,38 @@ class Admin:
             return {'error': f'could not delete message ID = {message_id}'}
         
 
-class Basic:
-    def __init__(self, message_board):
-        self.message_board = message_board
-        self.notification = Notification(message_board)
-        
-    def get_notification(self):
+class Basic:                
+    def _load_notification(self, notification):
         try:
-            self.notification.load()
-            return dict(self.notification)
+            notification.load()
+            return dict(notification)
 
         except FileNotFoundError:
             return {'notify': False}
+        
+    def get_youngest_notification(self):
+        message_boards = get_directories()
+        notifications = [Notification(message_board) for message_board in message_boards]
+        loaded_notifications = [self._load_notification(notification) for notification in notifications]
+        
+        # filter out notify = false
+        filtered_notifications = list(filter(lambda notification: notification != {'notify': False}, loaded_notifications))
+        
+        if len(filtered_notifications) == 0:
+            return {'notify': False}
+        
+        # find the youngest notification
+        youngest_date = datetime.datetime(1980, 1, 1) # some really old starting date
+        youngest_notification = None
+        for notification in filtered_notifications:
+            date = datetime.datetime.strptime(notification['expiration_date'], notification['datetime_format'])
+            
+            if date > youngest_date:
+                youngest_date = date
+                youngest_notification = notification
+        
+        return youngest_notification
+        
+        
+        
+        

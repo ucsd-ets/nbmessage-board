@@ -99,9 +99,9 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             this.appState = appState;
         }
 
-        createCookie(messsageBoard) {
+        createCookie() {
             var that = this;
-            $.get(utils.get_body_data('baseUrl') + 'nbmessage/notify/' + messsageBoard, function(data) {
+            $.get(utils.get_body_data('baseUrl') + 'nbmessage/notify', function(data) {
                 data = JSON.parse(data);
                 var cookie = new MessageBoardCookie();
                 var cookieExists = cookie.exists();
@@ -125,10 +125,10 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             });
         }
 
-        modifyNotification(messageBoard) {
+        modifyNotification() {
             // click listener
             var that = this;
-            $.get(utils.get_body_data('baseUrl') + 'nbmessage/notify/' + messageBoard, function(data) {
+            $.get(utils.get_body_data('baseUrl') + 'nbmessage/notify', function(data) {
                 var cookie = new MessageBoardCookie();
                 var cookieValues = cookie.getCookie();
                 var cookieId = cookieValues[0];
@@ -149,9 +149,9 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
 
         update(newState) {
             if (newState.clicked) {
-                this.modifyNotification(newState.selectedMessageBoard);
+                this.modifyNotification();
             }
-            this.createCookie(newState.selectedMessageBoard);
+            this.createCookie();
         }
     }
 
