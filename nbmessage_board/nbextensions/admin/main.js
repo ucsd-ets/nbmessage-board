@@ -3,7 +3,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
     // following variables define page elements
 
     // the page components
-    var tab = '<li><a href="#nbmessage-board-admin" data-toggle="tab">UCSD ITS Messages (Admin)</a></li>';
+    var tab = '<li><a href="#nbmessage-board-admin" data-toggle="tab">nbmessage-board (Admin)</a></li>';
 
     var tabContent = `
     <div id="nbmessage-board-admin" class="tab-pane container nbmessage-board">
@@ -59,8 +59,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
         constructor(appState) {
             this.form = `
                 <div id="nbmessage-global">
-                    <h2 class="nbmessage-h2">Select a message board</h2>
-                    <label for="select-message-board">Selected Message Board</label>
+                    <label for="select-message-board">Select a message board to edit</label>
                     <select class="form-control" id="select-message-board" name="select_message_board"></select>
                 </div>
             `
@@ -126,7 +125,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                             <div class="modal-body"></div>
                             <div class="modal-footer">
                             <button type="button" id='save-message' class="btn btn-default" data-dismiss="modal">Save</button>
-                            <button type="button" id='close-modal' class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -263,7 +262,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                 });
 
                 $('.modal-body').empty();
-                $('.modal-body').append(`<p class="alert alert-warning">Are you sure you want to delete message ID = ${formData.message_id}?</p>`);
+                $('.modal-footer').append(`<p class="alert alert-warning">Are you sure you want to delete message ID = ${formData.message_id}?</p>`);
                 $('#preview-modal').modal('show');
 
                 $('#save-message').click(function() {
@@ -275,10 +274,15 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                         // data: form.serialize()
                     }).done(function(template) {
                         // Optionally alert the user of success here...
+                        $('#close-modal, .close').off();
                         $('.modal-body').empty();
                         $('.modal-body').append(template);
                         $('#submit-modal').modal('show');
 
+                        $('#close-modal, .close').click(function() {
+                            window.location.reload();
+                        })
+    
                         // launch modal
                     }).fail(function(err) {
                         // Optionally alert the user of an error here...
@@ -293,13 +297,15 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
         setupFormSubmit() {
             var that = this;
             // remove event handlers that may be lingering
-            $('#nbmessage-admin').off('submit');
+            $('#nbmessage-admin').off();
+            $('#save-message').off();
             // $('#save-message').off('click');
 
 
             $('#nbmessage-admin').submit(function(event) {
         
                 event.preventDefault();
+                event.stopImmediatePropagation();
                 var form = $(this);
     
                 var rawFormData = form.serializeArray();
@@ -317,10 +323,41 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                     // data: form.serialize()
                   }).done(function(template) {
                     // Optionally alert the user of success here...
-                    console.log(template);
                     $('.modal-body').empty();
                     $('.modal-body').append(template);
+                    $('.modal-footer >p').remove();
+                    $('.modal-footer').prepend(`<p class="col-sm-6" style="padding: 0; margin: 0;">The above message will be published to message board = ${that.selectedMessageBoard}</p>`);
                     $('#preview-modal').modal('show');
+                    $('#save-message').off(); // KEEP THIS, will prevent multiple submits fromt aking place
+
+                    // SUBMITTED MESSAGE
+                    $('#save-message').click(function() {
+                        formData.status = 'submit';
+                        formData.operation = 'add';
+                        $.ajax({
+                            type: form.attr('method'),
+                            url: utils.get_body_data('baseUrl') + `nbmessage/messages/${that.selectedMessageBoard}`,
+                            headers: {'X-CSRFToken': getCookie("_xsrf")},
+                            data: JSON.stringify(formData)
+                        }).done(function(responseMessage) {
+                            // success modal
+                            $('#close-modal').off();
+                            $('.modal-body').empty();
+                            $('.modal-footer >p').remove();
+                            $('.modal-body').append(`<p class="alert alert-success">${responseMessage}</p>`);
+                            $('#submit-modal, .close').modal('show');
+                            $('#close-modal').click(function() {
+                                window.location.reload();
+                            });
+
+                        }).fail(function(err) {
+                            // failure modal, could not save or something
+                            $('.modal-body').empty();
+                            $('.modal-body').append(`<p class="alert alert-warning">${err.responseText}</p>`);
+                            $('#submit-modal').modal('show');
+
+                        });
+                    });
 
                     // launch modal
                   }).fail(function(err) {
@@ -329,31 +366,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                     $('.modal-body').append(`<p class="alert alert-warning">${err.responseText}</p>`);
                     $('#preview-modal').modal('show');
                 });
-                
-                // SUBMITTED MESSAGE
-                $('#save-message').click(function() {
-                    formData.status = 'submit';
-                    formData.operation = 'add';
-                    
-                    $.ajax({
-                        type: form.attr('method'),
-                        url: utils.get_body_data('baseUrl') + `nbmessage/messages/${that.selectedMessageBoard}`,
-                        headers: {'X-CSRFToken': getCookie("_xsrf")},
-                        data: JSON.stringify(formData)
-                      }).done(function(responseMessage) {
-                        // success modal
-                        $('.modal-body').empty();
-                        $('.modal-body').append(`<p class="alert alert-success">${responseMessage}</p>`);
-                        $('#submit-modal').modal('show');
-
-                    }).fail(function(err) {
-                        // failure modal, could not save or something
-                        $('.modal-body').empty();
-                        $('.modal-body').append(`<p class="alert alert-warning">${err.responseText}</p>`);
-                        $('#submit-modal').modal('show');
-
-                    });
-                });
+            
             });
         }
 
@@ -462,9 +475,6 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
         $('#tabs').append(tab);
         $('.tab-content').append(tabContent);
 
-        // 
-
-
         /** Class initializations */
         var appState = new AppState();
 
@@ -483,8 +493,6 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
             var title = JSON.parse(data);
             $('#tab-title>input').attr("placeholder", title)
         });
-        
-        // todo add a spinner on click
     };
 
     return {

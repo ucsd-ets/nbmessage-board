@@ -1,6 +1,7 @@
-.main-border {
+.nbmessage-border {
     border-bottom: 1px solid #e2e2e2;
     padding-bottom: .5em;
+    margin-bottom: 1em;
 }
 
 .user-fmt {

@@ -5,7 +5,7 @@
 - Test against directory permissions
 - Test against direct write
 
-- fix spacing in body
+
 
 - Improve logging
 
@@ -18,3 +18,5 @@
 - Setup delete message
 - Create test suite
 - Clean up CSS
+- color picker implemented
+- fix spacing in body

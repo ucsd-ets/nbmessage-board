@@ -31,7 +31,7 @@ def html2bs4(html: str) -> BeautifulSoup:
 
 def decorate_message(html, author, timestamp, base_url, color_scheme='nbmessage-default'):
     decorated_message = f"""
-    <div class="row col-md-8 padding-bottom-sm main-border">
+    <div class="row col-md-8 nbmessage-border">
         {html}
         <div class="col-xs-4 nbmessage-background {color_scheme}">
             <div class="col-xs-12 user-fmt">

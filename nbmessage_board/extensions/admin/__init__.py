@@ -82,6 +82,7 @@ class MessagesHandler(IPythonHandler):
             
             # check message id
             message_ids = admin.messages.message_ids
+
             if body['message_id'] in message_ids:
                 self.set_status(400)
                 self.finish(f"message_id = {body['message_id']} already exist!")
@@ -94,7 +95,6 @@ class MessagesHandler(IPythonHandler):
 
             # finally create the message
             message = Message(body['message_id'], body['message_body'], body['author'], base_url='/', color_scheme=f'nbmessage-{body["color_scheme"].lower()}')
-            print(message.color_scheme)
             admin.messages.append(message)
             admin.messages.sort()
             admin.messages.save()

@@ -107,23 +107,34 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                 var cookieExists = cookie.exists();
                 var cookieValues = cookie.getCookie();
                 var cookieId = cookieValues[0];
+                var cookieState = cookieValues[1];
     
                 if (data.notify && !cookieExists) {
                     // CLEAN CASE, NOTHING HAS BEEN SET: cookie doesn't exist and we want it
-                    cookie.setCookie(data.notification_id, data.expiration_date);
+                    cookie.setCookie(data.notification_id + '-true', data.expiration_date);
+                    that.appendHTML();
+                }
+                else if (cookieState === 'true') {
                     that.appendHTML();
                 }
                 else if (data.notify && cookieId !== data.notification_id) {
                     // a NEW notification has been set while the old cookie is still technically active
-                    cookie.setCookie(data.notification_id, data.expiration_date);
+                    cookie.setCookie(data.notification_id + '-true', data.expiration_date);
                     that.appendHTML();
                 }
             });
         }
 
-        modifyNotification() {
+        modifyNotification(messageBoard) {
             // click listener
-            this.removeHTML();
+            var that = this;
+            $.get(utils.get_body_data('baseUrl') + 'nbmessage/notify/' + messageBoard, function(data) {
+                var cookie = new MessageBoardCookie();
+                var cookieValues = cookie.getCookie();
+                var cookieId = cookieValues[0];
+                cookie.setCookie(cookieId + '-false', data.expiration_date)
+                that.removeHTML();
+            });
         }
 
         appendHTML() {
@@ -138,7 +149,7 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
 
         update(newState) {
             if (newState.clicked) {
-                this.modifyNotification();
+                this.modifyNotification(newState.selectedMessageBoard);
             }
             this.createCookie(newState.selectedMessageBoard);
         }
