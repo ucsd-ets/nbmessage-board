@@ -9,12 +9,13 @@ from ...markdown import *
 from ...users import Admin
 from ...message import Message, MessageContainer
 from ...notification import Notification
+from ... import CONFIG_DIR
 
 class AdminHandler(IPythonHandler):
     @web.authenticated
     @check_xsrf
     def get(self):
-        yaml = load_yaml('/etc/nbmessage-board/nbmessage-board-config.yaml');
+        yaml = load_yaml(os.path.join(CONFIG_DIR, 'nbmessage-board-config.yaml'));
         title = yaml.pop('tab_title')
         self.write(json.dumps(title)) 
 class MessagesHandler(IPythonHandler):
@@ -68,7 +69,7 @@ class MessagesHandler(IPythonHandler):
                 return True
             
             notification = Notification(self.message_board, notify=True, expiration_date=expiration_date)
-            notification.save()
+            notification.save('0755')
             return False
         
         except KeyError:
@@ -153,7 +154,7 @@ class MessagesHandler(IPythonHandler):
             
             else:
                 self.write(f'<p class="alert alert-success">{result["success"]}</p>')
-
+    
         except Exception as e:
             logging.error(e)
             self.write({'error': str(e)})

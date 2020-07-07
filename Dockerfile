@@ -5,11 +5,11 @@ FROM jupyter/datascience-notebook:latest
 USER root
 
 # make directories to maintain/configure program state
-RUN mkdir -p /etc/nbmessage-board/admin /var/lib/nbmessage-board/{test,mboard}
+# RUN mkdir -p /var/lib/nbmessage-board/{test,mboard}
 
 COPY ./nbmessage_board/static /var/lib/nbmessage-board/static
 COPY . /opt/nbmessage-board
-COPY ./tests/mocks/nbmessage-board-config.yaml /etc/nbmessage-board
+COPY ./tests/mocks/nbmessage-board-config.yaml /etc/jupyter
 
 WORKDIR /opt/nbmessage-board
 
@@ -41,9 +41,14 @@ RUN chmod +x /usr/bin/chromedriver
 
 RUN apt-get install iputils-ping
 
-RUN useradd -ms /bin/bash user1
-RUN useradd -ms /bin/bash user2
-RUN useradd -ms /bin/bash user3
+RUN useradd -u 1001 -ms /bin/bash user1
+RUN useradd -u 1002 -ms /bin/bash user2
+RUN useradd -u 1003 -ms /bin/bash user3
+
+RUN chown -R 1000:1000 /home/jovyan
+RUN chmod -R 777 /home/jovyan
 
 # for testing, only root can modify both message boards (at least by default)
-RUN chmod -R 0744 /var/lib/nbmessage-board 
+RUN chmod -R 0755 /var/lib/nbmessage-board 
+
+ENV START "/opt/conda/bin/jupyter notebook --ip 0.0.0.0 --allow-root --NotebookApp.token=''"

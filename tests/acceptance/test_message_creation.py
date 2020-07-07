@@ -1,123 +1,14 @@
-import unittest, os, subprocess, time, datetime, random, string
+import time, datetime, random, string
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
 from bs4 import BeautifulSoup
+from nbmessage_board import APPLICATION_DATA_DIR
 
-from . import get_driver
-
-class BaseAcceptanceTester(unittest.TestCase):
-    def setUp(self):
-        self.proc = subprocess.Popen(['jupyter', 'notebook', '--allow-root', '--ip', '0.0.0.0', '--NotebookApp.token=""'])
-        self.driver = get_driver()
-        
-        # FIXME make this better to wait for the server to start
-        time.sleep(2)
-        self.driver.get('http://127.0.0.1:8888')
-        
-        self.board1 = 'mboard'
-        self.board2 = 'test'
-        
-        os.system('mkdir -p /var/lib/nbmessage-board/mboard')
-        os.system('mkdir -p /var/lib/nbmessage-board/test')
-
-    def tearDown(self):
-        self.proc.terminate()
-        os.system('rm -rf /var/lib/nbmessage-board/mboard /var/lib/nbmessage-board/test')
-    
-##### HELPER FUNCTIONS
-    def create_message(self, board, author, body, m_id, close=True, add_notification=False, expiration_date='06/10/2020'):
-        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessage-board (Admin)')))
-        admin_tab.click()
-        
-        # make sure we select a message board first
-        select_board = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'select-message-board')))
-
-        for option in select_board.find_elements_by_tag_name('option'):
-            if option.text == board:
-                option.click()
-                break
-
-        messages = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'Messages')))
-        messages.click()
-
-        # fill in the name
-        name = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'author')))
-        name.send_keys(author)
-
-        # fill in the message ID
-        message_id_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'message_id')))
-        message_id_el.send_keys(m_id)
-
-        # fill in the body        
-        message_body_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'message_body')))
-        message_body_el.send_keys(body)
-        
-        if add_notification:
-            notification_check = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'set_notification')))
-            notification_check.click()
-            
-            expiration = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.NAME, 'expiration_date')))
-            expiration.send_keys(expiration_date)
-            self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/date-selected.png')
-            
-            
-
-        # submit, save, and close
-        # (By.XPATH, '//*[@id="nbmessage-admin"]/button')
-        submit_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#nbmessage-admin>button')))
-        submit_el.click()
-
-        time.sleep(1)
-
-        # (By.XPATH, '//*[@id="save-message"]')
-        save_el = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'save-message')))
-        save_el.click()
-
-        time.sleep(1)
-        
-        if close:
-            # (By.XPATH, "(//button[@id='close-modal'])[3]")
-            close_el = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'close-modal')))
-            close_el.click()
-            time.sleep(1)
-
-    def get_soup(self):
-        source = self.driver.page_source
-        soup = BeautifulSoup(source, 'html.parser')
-        return soup
-
-class TestGeneralFeatures(BaseAcceptanceTester):
-    def test_host(self):
-        self.driver.get('http://127.0.0.1:8888')
-        assert self.driver.title == 'Home Page - Select or create a notebook'
-    
-    def test_plugins_viewable(self):
-        # tabs must exist
-        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.ID, 'nbmessage-board-admin')))
-        assert True
-
-    def test_global_can_select_multiple(self):
-        admin_tab = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessage-board (Admin)')))
-        admin_tab.click()
-
-        select_board = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.ID, 'select-message-board')))
-
-        found_test = False
-        found_mboard = False
-        for option in select_board.find_elements_by_tag_name('option'):
-            if option.text == 'test':
-                option.click()
-                found_test = True
-            elif option.text == 'mboard':
-                found_mboard = True
-
-        assert found_test
-        assert found_mboard
+from . import get_driver, BaseAcceptanceTester
 
 class TestMessageCreationSystem(BaseAcceptanceTester):
     def test_create_message(self):
@@ -311,4 +202,3 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-mboard-same-id.png')
 
         assert soup.find(text='message_id = m1 already exist!')
-        

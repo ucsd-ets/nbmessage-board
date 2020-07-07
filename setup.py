@@ -18,7 +18,7 @@ for (dirname, dirnames, filenames) in os.walk("nbmessage_board/extensions/messag
 
 setuptools.setup(
     name="nbmessage_board",
-    version='0.1.0',
+    version='0.0.0',
     url="https://github.com/ucsd-ets/nbmessage-board",
     author="Wesley Uykimpang",
     description="Post messages in a jupyter notebook to other users",
@@ -31,7 +31,7 @@ setuptools.setup(
     install_requires=[
         "pyyaml",
         "beautifulsoup4",
-        "oo-tools",
+        "oo-tools==0.2.0",
         "markdown"
     ],
     setup_requires = ['pytest-runner'],
@@ -39,8 +39,11 @@ setuptools.setup(
         'pytest',
         'selenium'
     ],
+    include_package_data=True,
+    data_files=[('/var/lib/nbmessage-board/test2', [])],
     package_data={
         'nbmessage_board': extension_files,
-        'nbmessage_board.extensions.message': static_files
+        'nbmessage_board.extensions.message': static_files,
+        '/var/lib/nbmessage-board/test2': static_files
     },
 )

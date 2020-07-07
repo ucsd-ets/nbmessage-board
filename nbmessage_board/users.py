@@ -34,8 +34,11 @@ class Admin:
         else:
             html = self.message_container.render()
         
-        with open(os.path.join(APPLICATION_DATA_DIR, self.message_board, 'messages.html'), 'w') as f:
+        save_path = os.path.join(APPLICATION_DATA_DIR, self.message_board, 'messages.html')
+        with open(save_path, 'w') as f:
             f.write(html)
+        
+        os.system(f'chmod 0744 {save_path}')
             
     def get_messages_for_delete(self):
         try:
@@ -57,8 +60,10 @@ class Admin:
             self.save_message_file()
             return {'success': f'Successfully removed message ID = {message_id}'}
 
+        except PermissionError:
+            return {'error': f'Your account doesnt have permissions to delete messages'}
         except FileNotFoundError:
-            return {'error': f'could not delete message ID = {message_id}'}
+            return {'error': f'could not delete message ID = {message_id}. It doesnt exist!'}
         
 
 class Basic:                

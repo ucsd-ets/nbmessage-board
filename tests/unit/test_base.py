@@ -1,22 +1,14 @@
 from nbmessage_board.base import *
+from nbmessage_board import APPLICATION_DATA_DIR
 
 import unittest, os, sqlite3
 
-DBFILE = '/var/lib/nbmessage-board/test/nbmessage_board.db'
-NEWDIR = '/var/lib/nbmessage-board/test2'
+NEWDIR = os.path.join(APPLICATION_DATA_DIR, 'test2')
 
 class TestGetDirectories(unittest.TestCase):
-    def setUp(self):
-        self.adddir()
 
     def tearDown(self):
         self.rmdir()
-    
-    def adddir(self):
-        try:
-            os.mkdir(NEWDIR)
-        except:
-            pass
     
     def rmdir(self):
         try:
@@ -25,13 +17,13 @@ class TestGetDirectories(unittest.TestCase):
             pass
     
     def test_get_directories(self):
-        self.rmdir()
         directories = get_directories()
         
         assert 'sql' not in directories, 'sql is in the directory'
         assert 'test2' not in directories, 'mock directory is listed'
         
-        self.adddir()
+        os.mkdir(NEWDIR)
+        assert 'test2' in os.listdir(APPLICATION_DATA_DIR), 'test2 has been created in the application directory'
         
         directories = get_directories()
         assert 'test2' in directories, 'mock directory needs to be listed'

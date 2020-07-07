@@ -3,7 +3,7 @@
 from .utils import load_yaml
 import yaml
 
-CONFIG_FILE = '/etc/nbmessage-board/nbmessage-board-config.yaml'
+CONFIG_FILE = '/etc/jupyter/nbmessage-board-config.yaml'
 
 
 class Config:

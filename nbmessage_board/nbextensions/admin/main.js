@@ -210,7 +210,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                 <div class="nbmessage-form-group">
                     <form id="nbmessage-admin-delete" method="delete">
                         <div class="nbmessage-form-group">
-                            <div class="form-group" id="delete-message">
+                            <div class="form-group">
                                 <label for="message-operation">Delete a message</label>
                                 <select class="form-control" id="delete-message" name="message_id"></select>
                             </div>
@@ -218,7 +218,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                         </div>
                         <br/>
                         <input name="operation" type="hidden" value="delete">
-                        <button type="submit" class="btn btn-default">Submit</button>
+                        <button type="submit" class="btn btn-default col-sm-8">Submit</button>
                     </form>
                 </div>
             `
@@ -263,7 +263,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                 });
 
                 $('.modal-body').empty();
-                $('.modal-footer').append(`<p class="alert alert-warning">Are you sure you want to delete message ID = ${formData.message_id}?</p>`);
+                $('.modal-body').append(`<p class="alert alert-warning">Are you sure you want to delete message ID = ${formData.message_id}?</p>`);
                 $('#preview-modal').modal('show');
 
                 $('#save-message').click(function() {
@@ -300,7 +300,6 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
             // remove event handlers that may be lingering
             $('#nbmessage-admin').off();
             $('#save-message').off();
-            // $('#save-message').off('click');
 
 
             $('#nbmessage-admin').submit(function(event) {
@@ -357,6 +356,8 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                             $('.modal-body').append(`<p class="alert alert-danger">${err.responseText}</p>`);
                             $('#submit-modal').modal('show');
 
+                        }).always(function() {
+                            $('.modal-footer > p').remove();
                         });
                     });
 
