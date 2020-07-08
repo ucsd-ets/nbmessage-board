@@ -1,5 +1,5 @@
-from nbmessage_board.base import *
-from nbmessage_board import APPLICATION_DATA_DIR
+from nbmessages.base import *
+from nbmessages import APPLICATION_DATA_DIR
 
 import unittest, os, sqlite3
 

@@ -1,11 +1,11 @@
-from nbmessage_board.utils import *
-from nbmessage_board import CONFIG_DIR
+from nbmessages.utils import *
+from nbmessages import CONFIG_DIR
 
 import unittest, os
 
 class TestUtils(unittest.TestCase):
     def test_load_yaml(self):
-        yaml = load_yaml(os.path.join(CONFIG_DIR, 'nbmessage-board-config.yaml'))
+        yaml = load_yaml(os.path.join(CONFIG_DIR, 'nbmessages-config.yaml'))
         assert isinstance(yaml, dict)
         assert bool(yaml)
         

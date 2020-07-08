@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from nbmessage_board import APPLICATION_DATA_DIR
+from nbmessages import APPLICATION_DATA_DIR
 
 from . import get_driver, BaseAcceptanceTester
 
@@ -41,7 +41,7 @@ class TestSecurity(unittest.TestCase):
         body = 'test'
         m_id = 'm1'
         
-        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessage-board (Admin)')))
+        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessages (Admin)')))
         admin_tab.click()
         
         # make sure we select a message board first
@@ -80,7 +80,7 @@ class TestSecurity(unittest.TestCase):
         save_el.click()
 
         time.sleep(1)
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/security.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/security.png')
         
         soup = self.get_soup()
 

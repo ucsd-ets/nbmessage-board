@@ -15,7 +15,7 @@ class AdminHandler(IPythonHandler):
     @web.authenticated
     @check_xsrf
     def get(self):
-        yaml = load_yaml(os.path.join(CONFIG_DIR, 'nbmessage-board-config.yaml'));
+        yaml = load_yaml(os.path.join(CONFIG_DIR, 'nbmessages-config.yaml'));
         title = yaml.pop('tab_title')
         self.write(json.dumps(title)) 
 class MessagesHandler(IPythonHandler):

@@ -2,8 +2,8 @@ import setuptools, os
 
 # get paths to all the extension files
 extension_files = []
-for (dirname, dirnames, filenames) in os.walk("nbmessage_board/nbextensions"):
-    root = os.path.relpath(dirname, "nbmessage_board")
+for (dirname, dirnames, filenames) in os.walk("nbmessages/nbextensions"):
+    root = os.path.relpath(dirname, "nbmessages")
     for filename in filenames:
         if filename.endswith(".pyc"):
             continue
@@ -11,15 +11,15 @@ for (dirname, dirnames, filenames) in os.walk("nbmessage_board/nbextensions"):
 
 # get paths to all the static files and templates
 static_files = []
-for (dirname, dirnames, filenames) in os.walk("nbmessage_board/extensions/message"):
-    root = os.path.relpath(dirname, "nbmessage_board/extensions/message")
+for (dirname, dirnames, filenames) in os.walk("nbmessages/extensions/message"):
+    root = os.path.relpath(dirname, "nbmessages/extensions/message")
     for filename in filenames:
         static_files.append(os.path.join(root, filename))
 
 setuptools.setup(
-    name="nbmessage_board",
-    version='0.0.0',
-    url="https://github.com/ucsd-ets/nbmessage-board",
+    name="nbmessages",
+    version='0.0.1',
+    url="https://github.com/ucsd-ets/nbmessages",
     author="Wesley Uykimpang",
     description="Post messages in a jupyter notebook to other users",
     classifiers=[
@@ -40,9 +40,9 @@ setuptools.setup(
         'selenium'
     ],
     include_package_data=True,
-    data_files=[('nbmessage_board', ['nbmessage-board-config.yaml'])],
+    data_files=[('nbmessages', ['nbmessages-config.yaml'])],
     package_data={
-        'nbmessage_board': extension_files,
-        'nbmessage_board.extensions.message': static_files,
+        'nbmessages': extension_files,
+        'nbmessages.extensions.message': static_files,
     },
 )

@@ -3,12 +3,12 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
     // following variables define page elements
 
     // the page components
-    var tab = '<li><a href="#nbmessage-board-admin" data-toggle="tab">nbmessage-board (Admin)</a></li>';
+    var tab = '<li><a href="#nbmessages-admin" data-toggle="tab">nbmessages (Admin)</a></li>';
 
     var tabContent = `
-    <div id="nbmessage-board-admin" class="tab-pane container nbmessage-board">
+    <div id="nbmessages-admin" class="tab-pane container nbmessages">
         <div class="col-sm-2" id="nbmessage-nav"></div>
-        <div class="col-sm-10" id="nbmessage-board-admin-content" style="padding-left: 1em"></div>
+        <div class="col-sm-10" id="nbmessages-admin-content" style="padding-left: 1em"></div>
     </div>`
 
     class NavPills {
@@ -76,7 +76,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
         render() {
             if ($('#nbmessage-global').length === 0) {
                 var that = this;
-                $('#nbmessage-board-admin-content').append(this.form);
+                $('#nbmessages-admin-content').append(this.form);
                 $.get(utils.get_body_data('baseUrl') + 'nbmessage/directories', function(data) {
                     var directories = JSON.parse(data);
                     directories.forEach(function(directory, i) {
@@ -232,7 +232,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
 
         render() {
             if ($('#nbmessage-operation-group').length === 0) {
-                $('#nbmessage-board-admin-content').append(this.form);
+                $('#nbmessages-admin-content').append(this.form);
                 this.showSubform(this.messageOperation);
                 
                 // event listeners are dependent on whether element exists in render step

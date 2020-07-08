@@ -6,7 +6,7 @@ import os, functools
 from . import APPLICATION_DATA_DIR, DATA_DIR_IGNORE_DIRS
 
 def get_directories():
-    """list of all nbmessage_board directories"""
+    """list of all nbmessages directories"""
     items = os.listdir(APPLICATION_DATA_DIR)
 
     # ignore certain user defined directories

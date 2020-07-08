@@ -3,9 +3,9 @@
 from .utils import load_yaml
 import yaml, os, sys
 
-default_dir = os.path.join(sys.prefix, 'nbmessage_board', 'nbmessage-board-config.yaml')
+default_dir = os.path.join(sys.prefix, 'nbmessages', 'nbmessages-config.yaml')
 
-CONFIG_FILE = '/etc/jupyter/nbmessage-board-config.yaml'
+CONFIG_FILE = '/etc/jupyter/nbmessages-config.yaml'
 CONFIG_FILE = CONFIG_FILE if os.path.isfile(CONFIG_FILE) else default_dir
 
 class Config:

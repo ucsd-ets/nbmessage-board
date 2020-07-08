@@ -1,6 +1,6 @@
-# from nbmessage_board.users import *
-# from nbmessage_board.message import Message
-# from nbmessage_board import APPLICATION_DATA_DIR
+# from nbmessages.users import *
+# from nbmessages.message import Message
+# from nbmessages import APPLICATION_DATA_DIR
 
 # import unittest, os, random, bs4
 

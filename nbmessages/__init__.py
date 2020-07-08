@@ -1,11 +1,11 @@
 import os
-import sys
+import sys, os
 from .etc import Config
 __version__ = '0.1.0'
 
 config = Config()
 _config = config.config
-CONFIG_DIR = config.path # only hardcoded path
+CONFIG_DIR = os.path.dirname(config.path) # only hardcoded path
 DATA_DIR_IGNORE_DIRS = _config['application_data_dir']['data_dirs_to_ignore']
 APPLICATION_DATA_DIR = _config['application_data_dir']['location']
 
@@ -29,8 +29,8 @@ def _jupyter_nbextension_paths():
 
 def _jupyter_server_extension_paths():
     paths = [
-        dict(module="nbmessage_board.extensions.message"),
-        dict(module="nbmessage_board.extensions.admin")
+        dict(module="nbmessages.extensions.message"),
+        dict(module="nbmessages.extensions.admin")
     ]
 
     return paths

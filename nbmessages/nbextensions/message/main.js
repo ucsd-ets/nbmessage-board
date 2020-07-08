@@ -1,8 +1,8 @@
 define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
     var tabContent = `
-    <div id="nbmessage-board" class="tab-pane nbmessage-board">
+    <div id="nbmessages" class="tab-pane nbmessages">
         <div class="col-sm-2">
-            <ul class="nav nav-pills nav-stacked" id="nbmessage-boards"></ul>
+            <ul class="nav nav-pills nav-stacked" id="nbmessagess"></ul>
         </div>
         <div class="col-sm-10" id="nbmessage-messages"></div>
     </div>`
@@ -13,10 +13,10 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                 var directories = JSON.parse(data);
                 directories.forEach(function(directory, index) {
                     if (index === 0) {
-                        $('#nbmessage-boards').append(`<li role="presentation" class="nbmessage-pill active"><a href="#">${directory}</a></li>`)
+                        $('#nbmessagess').append(`<li role="presentation" class="nbmessage-pill active"><a href="#">${directory}</a></li>`)
                         appState.updateState({selectedMessageBoard: directory});
                     } else {
-                        $('#nbmessage-boards').append(`<li role="presentation" class="nbmessage-pill"><a href="#">${directory}</a></li>`);
+                        $('#nbmessagess').append(`<li role="presentation" class="nbmessage-pill"><a href="#">${directory}</a></li>`);
                     }
                 });
             
@@ -139,7 +139,7 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
 
         appendHTML() {
             if ($('#nbmessage-envelope').length === 0) {
-                $('#nbmessage-board-tab').append(this.html);
+                $('#nbmessages-tab').append(this.html);
             }
         }
 
@@ -192,18 +192,18 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
 
     var load_ipython_extension = function () {
         // add custom css/js
-        $('head').append(`<link rel="stylesheet" type="text/css" href="${utils.get_body_data('baseUrl') + 'nbmessage/css/nbmessage-board.css'}">`);
+        $('head').append(`<link rel="stylesheet" type="text/css" href="${utils.get_body_data('baseUrl') + 'nbmessage/css/nbmessages.css'}">`);
         $('head').append(`<link rel="stylesheet" type="text/css" href="${utils.get_body_data('baseUrl') + 'nbmessage/css/bootstrap-datepicker.min.css'}">`);
 
         // set the tab title, everything must take place once the tab is established
         $.get(utils.get_body_data('baseUrl') + 'nbmessage/admin', function(data) {
             var messageState = new MessageState();
             var title = JSON.parse(data);
-            $('#tabs').append(`<li ><a href="#nbmessage-board" id="nbmessage-board-tab" data-toggle="tab">${title}</a></li>`)
+            $('#tabs').append(`<li ><a href="#nbmessages" id="nbmessages-tab" data-toggle="tab">${title}</a></li>`)
             $('.tab-content').append(tabContent);
 
             // set listener on tab click
-            $('#nbmessage-board-tab').click(function() {
+            $('#nbmessages-tab').click(function() {
                 messageState.updateState({'clicked': true}, endSet={'clicked': false});
             });
             var messageBoardPill = new MessageBoardsPill(messageState);

@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from nbmessage_board import APPLICATION_DATA_DIR
+from nbmessages import APPLICATION_DATA_DIR
 
 def get_driver():
     chrome_options = webdriver.ChromeOptions()
@@ -49,7 +49,7 @@ class BaseAcceptanceTester(unittest.TestCase):
 ##### HELPER FUNCTIONS
 
     def navigate_to_admin_tab(self):
-        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessage-board (Admin)')))
+        admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessages (Admin)')))
         admin_tab.click()
             
     def select_board(self, board):
@@ -108,7 +108,7 @@ class BaseAcceptanceTester(unittest.TestCase):
                 close_el.click()
                 time.sleep(1)
         except:
-            self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/error.png')
+            self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/error.png')
 
     def get_soup(self):
         source = self.driver.page_source
@@ -130,4 +130,4 @@ class BaseAcceptanceTester(unittest.TestCase):
         soup = self.get_soup()
         
     def screenshot(self, name):
-        self.driver.save_screenshot(f'/opt/nbmessage-board/tests/acceptance/screenshots/{name}')
+        self.driver.save_screenshot(f'/opt/nbmessages/tests/acceptance/screenshots/{name}')

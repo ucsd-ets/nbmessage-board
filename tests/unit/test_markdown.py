@@ -1,8 +1,8 @@
-from nbmessage_board.markdown import *
+from nbmessages.markdown import *
 
 import unittest, os
 
-TESTMD_FILE = '/opt/nbmessage-board/tests/mocks/test-markdown.md'
+TESTMD_FILE = '/opt/nbmessages/tests/mocks/test-markdown.md'
 
 class TestMarkdown(unittest.TestCase):
     def test_read_md(self):
@@ -15,7 +15,7 @@ class TestMarkdown(unittest.TestCase):
             read_md('/fakepath')
         
         with self.assertRaises(TypeError):
-            read_md('/opt/nbmessage-board/tests/mocks/something.txt')
+            read_md('/opt/nbmessages/tests/mocks/something.txt')
     
     def test_md2html(self):
         md = read_md(TESTMD_FILE)

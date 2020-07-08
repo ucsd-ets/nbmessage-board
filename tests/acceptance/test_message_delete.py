@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from nbmessage_board import APPLICATION_DATA_DIR
+from nbmessages import APPLICATION_DATA_DIR
 
 from . import get_driver, BaseAcceptanceTester
 

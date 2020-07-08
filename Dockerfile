@@ -5,19 +5,19 @@ FROM jupyter/datascience-notebook:latest
 USER root
 
 # make directories to maintain/configure program state
-# RUN mkdir -p /var/lib/nbmessage-board/{test,mboard}
+# RUN mkdir -p /var/lib/nbmessages/{test,mboard}
 
-COPY ./nbmessage_board/static /var/lib/nbmessage-board/static
-COPY . /opt/nbmessage-board
+COPY ./nbmessages/static /var/lib/nbmessages/static
+COPY . /opt/nbmessages
 
-WORKDIR /opt/nbmessage-board
+WORKDIR /opt/nbmessages
 
-# install nbmessage-board
+# install nbmessages
 RUN python3 setup.py bdist_wheel
 RUN pip install dist/*.whl
 
-RUN jupyter serverextension enable --sys-prefix --py nbmessage_board
-RUN jupyter nbextension install --sys-prefix --py nbmessage_board
+RUN jupyter serverextension enable --sys-prefix --py nbmessages
+RUN jupyter nbextension install --sys-prefix --py nbmessages
 RUN jupyter nbextension enable --user message/main --section=tree
 RUN jupyter nbextension enable --user admin/main --section=tree
 RUN ln -fs /usr/share/zoneinfo/America/Los_Angeles /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
@@ -48,6 +48,6 @@ RUN chown -R 1000:1000 /home/jovyan
 RUN chmod -R 777 /home/jovyan
 
 # for testing, only root can modify both message boards (at least by default)
-RUN chmod -R 0755 /var/lib/nbmessage-board 
+RUN chmod -R 0755 /var/lib/nbmessages 
 
 ENV START "/opt/conda/bin/jupyter notebook --ip 0.0.0.0 --allow-root --NotebookApp.token=''"

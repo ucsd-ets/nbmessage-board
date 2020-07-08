@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
-from nbmessage_board import APPLICATION_DATA_DIR
+from nbmessages import APPLICATION_DATA_DIR
 
 from . import get_driver, BaseAcceptanceTester
 
@@ -33,7 +33,7 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         
         soup = self.get_soup()
         
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-mboard.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-mboard.png')
         assert soup.find(id='nbmessage-messages') is not None
         assert soup.find(text='What is Lorem Ipsum') is not None
         assert soup.find(text=input_name) is not None
@@ -45,7 +45,7 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         
         time.sleep(1)
         soup = self.get_soup()
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-test.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-test.png')
         assert soup.find(text='No messages yet') is not None
         
     def test_add_multiple_messages(self):
@@ -74,7 +74,7 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         
         soup = self.get_soup()
         
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-mboard-multi.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-mboard-multi.png')
         
         assert soup.find(id='nbmessage-messages') is not None
         # message 1
@@ -117,7 +117,7 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         
         soup = self.get_soup()
         
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-multi.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-multi.png')
         assert soup.find(id='nbmessage-messages') is not None
         # message 1
         assert soup.find(text='Hello') is not None
@@ -129,7 +129,7 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         
         soup = self.get_soup()
         
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-multi2.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-multi2.png')
         assert soup.find(id='nbmessage-messages') is not None
         # message 2
         assert soup.find(text='Hi') is not None
@@ -175,7 +175,7 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         soup = self.get_soup()
         mboard_messages = len(soup.select('.nbmessage-border'))
         assert mboard_messages == messages_in_board[1]
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-mboard-multi.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-mboard-multi.png')
         
         test_tab = WebDriverWait(self.driver, 5).until(EC.element_to_be_clickable((By.LINK_TEXT, 'test')))
         test_tab.click()
@@ -185,7 +185,7 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         test_messages = len(soup.select('.nbmessage-border'))
         assert test_messages == messages_in_board[0]
         
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-test-multi.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-test-multi.png')
     
 ##### NEGATIVE TEST CODE
     def test_add_message_with_same_id_fails(self):
@@ -199,6 +199,6 @@ class TestMessageCreationSystem(BaseAcceptanceTester):
         self.create_message(self.board1, author1, body1, id_1, close=False)
         
         soup = self.get_soup()
-        self.driver.save_screenshot('/opt/nbmessage-board/tests/acceptance/screenshots/admin-mboard-same-id.png')
+        self.driver.save_screenshot('/opt/nbmessages/tests/acceptance/screenshots/admin-mboard-same-id.png')
 
         assert soup.find(text='message_id = m1 already exist!')
