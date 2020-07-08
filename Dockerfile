@@ -9,7 +9,6 @@ USER root
 
 COPY ./nbmessage_board/static /var/lib/nbmessage-board/static
 COPY . /opt/nbmessage-board
-COPY ./tests/mocks/nbmessage-board-config.yaml /etc/jupyter
 
 WORKDIR /opt/nbmessage-board
 

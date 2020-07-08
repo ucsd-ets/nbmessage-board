@@ -40,10 +40,9 @@ setuptools.setup(
         'selenium'
     ],
     include_package_data=True,
-    data_files=[('/var/lib/nbmessage-board/test2', [])],
+    data_files=[('nbmessage_board', ['nbmessage-board-config.yaml'])],
     package_data={
         'nbmessage_board': extension_files,
         'nbmessage_board.extensions.message': static_files,
-        '/var/lib/nbmessage-board/test2': static_files
     },
 )

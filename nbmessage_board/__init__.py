@@ -3,9 +3,9 @@ import sys
 from .etc import Config
 __version__ = '0.1.0'
 
-
-_config = Config().config
-CONFIG_DIR = '/etc/jupyter' # only hardcoded path
+config = Config()
+_config = config.config
+CONFIG_DIR = config.path # only hardcoded path
 DATA_DIR_IGNORE_DIRS = _config['application_data_dir']['data_dirs_to_ignore']
 APPLICATION_DATA_DIR = _config['application_data_dir']['location']
 
