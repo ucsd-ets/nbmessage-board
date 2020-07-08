@@ -218,6 +218,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                         </div>
                         <br/>
                         <input name="operation" type="hidden" value="delete">
+                        <br/>
                         <button type="submit" class="btn btn-default col-sm-8">Submit</button>
                     </form>
                 </div>
@@ -381,10 +382,10 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                 var i = 0;
                 for (var messageId in messageInfo) {
                     if (i === messageInfoLength - 1) {
-                        $('#delete-message>select').append(`<option selected>${messageId}</option>`);
+                        $('#delete-message').append(`<option selected>${messageId}</option>`);
                         that.addDeleteMessage(messageInfo, messageId);
                     } else {
-                        $('#delete-message>select').append(`<option>${messageId}</option>`);
+                        $('#delete-message').append(`<option>${messageId}</option>`);
                     }
                     i++;
                 }

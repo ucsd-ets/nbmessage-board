@@ -55,7 +55,6 @@ class TestMessageDeleteSystem(BaseAcceptanceTester):
             self.navigate_to_mboard()
             
             soup = self.get_soup()
-            
             res = soup.find(text='No messages yet')
             assert len(res) >= 1
 
