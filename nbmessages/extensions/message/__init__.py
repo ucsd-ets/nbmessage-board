@@ -5,7 +5,8 @@ import json, os
 
 from ...base import get_directories, check_xsrf
 from ...users import Basic
-from ... import APPLICATION_DATA_DIR
+from ... import APPLICATION_DATA_DIR, STATIC_DIR
+
 
 class ShowMessage(IPythonHandler):
     @web.authenticated
@@ -42,6 +43,8 @@ def load_jupyter_server_extension(nbapp):
     route_pattern = url_path_join(nbapp.web_app.settings['base_url'], '/nbmessage')
     nbapp.web_app.add_handlers('.*', [
         (url_path_join(route_pattern, r'/render/(\w+)'), ShowMessage),
-        (url_path_join(route_pattern, r'/notify'), Notify)
+        (url_path_join(route_pattern, r'/notify'), Notify),
+        (route_pattern + '/(.*)', web.StaticFileHandler, {'path': f'{STATIC_DIR}'})
     ])
-    nbapp.web_app.add_handlers('.*', [(route_pattern + '/(.*)', web.StaticFileHandler, {'path': f'{APPLICATION_DATA_DIR}/static/'})])
+    # FIX ME move to top
+    # nbapp.web_app.add_handlers('.*', [(route_pattern + '/(.*)', web.StaticFileHandler, {'path': f'{STATIC_DIR}'})])

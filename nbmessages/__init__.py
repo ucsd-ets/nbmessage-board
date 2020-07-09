@@ -1,11 +1,11 @@
 import os
 import sys, os
-from .etc import Config
+from .etc import Config, STATIC_DIR
 __version__ = '0.1.0'
 
 config = Config()
 _config = config.config
-CONFIG_DIR = os.path.dirname(config.path) # only hardcoded path
+CONFIG_DIR = os.path.dirname(config.path)
 DATA_DIR_IGNORE_DIRS = _config['application_data_dir']['data_dirs_to_ignore']
 APPLICATION_DATA_DIR = _config['application_data_dir']['location']
 

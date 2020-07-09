@@ -15,6 +15,20 @@ for (dirname, dirnames, filenames) in os.walk("nbmessages/extensions/message"):
     root = os.path.relpath(dirname, "nbmessages/extensions/message")
     for filename in filenames:
         static_files.append(os.path.join(root, filename))
+        
+def get_data_files():
+    
+    # hydrate with config file
+    data_files = [('nbmessages', ['nbmessages-config.yaml'])]
+    
+    # get the static directory
+    for root, dirs, files in os.walk('static'):
+        if len(files) != 0:
+            file_paths = list(map(lambda file: os.path.join(root, file), files))
+            data_path = os.path.join('nbmessages', os.path.split(root)[1])
+            data_files.append((data_path, file_paths))
+    return data_files
+        
 
 setuptools.setup(
     name="nbmessages",
@@ -40,7 +54,7 @@ setuptools.setup(
         'selenium'
     ],
     include_package_data=True,
-    data_files=[('nbmessages', ['nbmessages-config.yaml'])],
+    data_files=get_data_files(),
     package_data={
         'nbmessages': extension_files,
         'nbmessages.extensions.message': static_files,

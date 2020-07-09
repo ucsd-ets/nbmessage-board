@@ -1,12 +1,14 @@
 """Configuration"""
 
-from .utils import load_yaml
 import yaml, os, sys
 
-default_dir = os.path.join(sys.prefix, 'nbmessages', 'nbmessages-config.yaml')
+from .utils import load_yaml
+STATIC_DIR = os.path.join(sys.prefix, 'nbmessages')
+
+default_config = os.path.join(STATIC_DIR, 'nbmessages-config.yaml')
 
 CONFIG_FILE = '/etc/jupyter/nbmessages-config.yaml'
-CONFIG_FILE = CONFIG_FILE if os.path.isfile(CONFIG_FILE) else default_dir
+CONFIG_FILE = CONFIG_FILE if os.path.isfile(CONFIG_FILE) else default_config
 
 class Config:
     """Representation of the config file"""

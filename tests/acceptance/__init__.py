@@ -47,7 +47,6 @@ class BaseAcceptanceTester(unittest.TestCase):
         os.system(f'rm -rf {APPLICATION_DATA_DIR}/mboard {APPLICATION_DATA_DIR}/test')
 
 ##### HELPER FUNCTIONS
-
     def navigate_to_admin_tab(self):
         admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessages (Admin)')))
         admin_tab.click()

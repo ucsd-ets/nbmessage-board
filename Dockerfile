@@ -6,8 +6,8 @@ USER root
 
 # make directories to maintain/configure program state
 # RUN mkdir -p /var/lib/nbmessages/{test,mboard}
-
-COPY ./nbmessages/static /var/lib/nbmessages/static
+RUN mkdir -p /var/lib/nbmessages
+# COPY ./nbmessages/static /var/lib/nbmessages/static
 COPY . /opt/nbmessages
 
 WORKDIR /opt/nbmessages
@@ -40,6 +40,7 @@ RUN chmod +x /usr/bin/chromedriver
 
 RUN apt-get install iputils-ping
 
+# for testing purposes, add multiple users
 RUN useradd -u 1001 -ms /bin/bash user1
 RUN useradd -u 1002 -ms /bin/bash user2
 RUN useradd -u 1003 -ms /bin/bash user3
