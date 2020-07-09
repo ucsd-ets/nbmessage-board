@@ -4,10 +4,10 @@ FROM jupyter/datascience-notebook:latest
 
 USER root
 
-# make directories to maintain/configure program state
-# RUN mkdir -p /var/lib/nbmessages/{test,mboard}
-RUN mkdir -p /var/lib/nbmessages
-# COPY ./nbmessages/static /var/lib/nbmessages/static
+RUN mkdir -p /srv/nbmessages
+# for testing, only root can modify both message boards (at least by default)
+RUN chmod -R 0755 /srv/nbmessages
+
 COPY . /opt/nbmessages
 
 WORKDIR /opt/nbmessages
@@ -48,7 +48,6 @@ RUN useradd -u 1003 -ms /bin/bash user3
 RUN chown -R 1000:1000 /home/jovyan
 RUN chmod -R 777 /home/jovyan
 
-# for testing, only root can modify both message boards (at least by default)
-RUN chmod -R 0755 /var/lib/nbmessages 
+
 
 ENV START "/opt/conda/bin/jupyter notebook --ip 0.0.0.0 --allow-root --NotebookApp.token=''"

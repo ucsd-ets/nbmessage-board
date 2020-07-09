@@ -76,27 +76,31 @@ class Basic:
             return {'notify': False}
         
     def get_youngest_notification(self):
-        message_boards = get_directories()
-        notifications = [Notification(message_board) for message_board in message_boards]
-        loaded_notifications = [self._load_notification(notification) for notification in notifications]
-        
-        # filter out notify = false
-        filtered_notifications = list(filter(lambda notification: notification != {'notify': False}, loaded_notifications))
-        
-        if len(filtered_notifications) == 0:
-            return {'notify': False}
-        
-        # find the youngest notification
-        youngest_date = datetime.datetime(1980, 1, 1) # some really old starting date
-        youngest_notification = None
-        for notification in filtered_notifications:
-            date = datetime.datetime.strptime(notification['expiration_date'], notification['datetime_format'])
+        try:
+            message_boards = get_directories()
+            notifications = [Notification(message_board) for message_board in message_boards]
+            loaded_notifications = [self._load_notification(notification) for notification in notifications]
             
-            if date > youngest_date:
-                youngest_date = date
-                youngest_notification = notification
+            # filter out notify = false
+            filtered_notifications = list(filter(lambda notification: notification != {'notify': False}, loaded_notifications))
+            
+            if len(filtered_notifications) == 0:
+                return {'notify': False}
+            
+            # find the youngest notification
+            youngest_date = datetime.datetime(1980, 1, 1) # some really old starting date
+            youngest_notification = None
+            for notification in filtered_notifications:
+                date = datetime.datetime.strptime(notification['expiration_date'], notification['datetime_format'])
+                
+                if date > youngest_date:
+                    youngest_date = date
+                    youngest_notification = notification
+            
+            return youngest_notification
         
-        return youngest_notification
+        except PermissionError:
+            return {'notify': False}
         
         
         

@@ -1,14 +1,15 @@
 import unittest, datetime, os
 
 from nbmessages.notification import Notification
+from nbmessages import APPLICATION_DATA_DIR
 
 class TestNotification(unittest.TestCase):
     def setUp(self):
-        os.system('mkdir /var/lib/nbmessages/test')
+        os.system(f'mkdir {os.path.join(APPLICATION_DATA_DIR, "test")}')
         self.notification = Notification('test', True, datetime.datetime(2050, 1, 2))
     
     def tearDown(self):
-        os.system('rm -rf /var/lib/nbmessages/test')
+        os.system(f'rm -rf {os.path.join(APPLICATION_DATA_DIR, "test")}')
     
     def test_convert_to_dict(self):
         as_dict = dict(self.notification)
