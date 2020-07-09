@@ -83,6 +83,7 @@ class MessagesHandler(IPythonHandler):
             
     def _submit_message(self):
         try:
+            print(self.base_url, '\n\n\n\n\n\n\n\n\n')
             # update the message object
             body = self.body
             admin = Admin(self.message_board)
@@ -102,7 +103,7 @@ class MessagesHandler(IPythonHandler):
                 return
 
             # finally create the message
-            message = Message(body['message_id'], body['message_body'], body['author'], base_url=body['base_url'], color_scheme=f'nbmessage-{body["color_scheme"].lower()}')
+            message = Message(body['message_id'], body['message_body'], body['author'], base_url=self.base_url, color_scheme=f'nbmessage-{body["color_scheme"].lower()}')
             admin.messages.append(message)
             admin.messages.sort()
             admin.messages.save()
