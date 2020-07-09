@@ -27,7 +27,7 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                     $(this).addClass('active');
                 });
 
-            });
+            }).fail(function() {});
 
             this.appState = appState;
             var that = this;
@@ -122,7 +122,8 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                     cookie.setCookie(data.notification_id + '-true', data.expiration_date);
                     that.appendHTML();
                 }
-            });
+            })
+            .fail(function() { });
         }
 
         modifyNotification() {
@@ -134,7 +135,7 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                 var cookieId = cookieValues[0];
                 cookie.setCookie(cookieId + '-false', data.expiration_date)
                 that.removeHTML();
-            });
+            }).fail(function() {});
         }
 
         appendHTML() {
@@ -213,7 +214,7 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             messageState.registerStateListener(messages);
             messageState.registerStateListener(notification);
 
-        });
+        }).fail(function() {});
     };
 
     return {
