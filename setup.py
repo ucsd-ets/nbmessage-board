@@ -17,7 +17,6 @@ for (dirname, dirnames, filenames) in os.walk("nbmessages/extensions/message"):
         static_files.append(os.path.join(root, filename))
         
 def get_data_files():
-    
     # hydrate with config file
     data_files = [('nbmessages', ['nbmessages-config.yaml'])]
     
@@ -28,11 +27,10 @@ def get_data_files():
             data_path = os.path.join('nbmessages', os.path.split(root)[1])
             data_files.append((data_path, file_paths))
     return data_files
-        
 
 setuptools.setup(
     name="nbmessages",
-    version='0.0.4',
+    version='0.0.6',
     url="https://github.com/ucsd-ets/nbmessages",
     author="Wesley Uykimpang",
     description="Post messages in a jupyter notebook to other users",

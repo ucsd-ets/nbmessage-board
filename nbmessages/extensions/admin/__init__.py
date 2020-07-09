@@ -102,7 +102,7 @@ class MessagesHandler(IPythonHandler):
                 return
 
             # finally create the message
-            message = Message(body['message_id'], body['message_body'], body['author'], base_url='/', color_scheme=f'nbmessage-{body["color_scheme"].lower()}')
+            message = Message(body['message_id'], body['message_body'], body['author'], base_url=body['base_url'], color_scheme=f'nbmessage-{body["color_scheme"].lower()}')
             admin.messages.append(message)
             admin.messages.sort()
             admin.messages.save()
