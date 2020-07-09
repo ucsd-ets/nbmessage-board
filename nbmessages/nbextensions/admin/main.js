@@ -219,7 +219,7 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                         <br/>
                         <input name="operation" type="hidden" value="delete">
                         <br/>
-                        <button type="submit" class="btn btn-default col-sm-8">Submit</button>
+                        <button type="submit" class="btn btn-default">Submit</button>
                     </form>
                 </div>
             `

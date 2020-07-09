@@ -18,7 +18,7 @@ for (dirname, dirnames, filenames) in os.walk("nbmessages/extensions/message"):
 
 setuptools.setup(
     name="nbmessages",
-    version='0.0.1',
+    version='0.0.2',
     url="https://github.com/ucsd-ets/nbmessages",
     author="Wesley Uykimpang",
     description="Post messages in a jupyter notebook to other users",
