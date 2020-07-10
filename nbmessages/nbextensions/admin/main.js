@@ -88,7 +88,8 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                         }
                         
                     });
-                });
+                })
+                .fail(function() {});
             }
         }
 
@@ -393,7 +394,8 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                 $(document).on('change', '#delete-message>select', function() {
                     var selectedMessageId = $(this).val();
                     that.addDeleteMessage(messageInfo, selectedMessageId);
-                });
+                })
+                .fail(function() {});
             });
         }
 
@@ -495,7 +497,8 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
         $.get(utils.get_body_data('baseUrl') + 'nbmessage/admin', function(data) {
             var title = JSON.parse(data);
             $('#tab-title>input').attr("placeholder", title)
-        });
+        })
+        .fail(function() {});
     };
 
     return {
