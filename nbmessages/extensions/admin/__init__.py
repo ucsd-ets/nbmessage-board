@@ -83,7 +83,6 @@ class MessagesHandler(IPythonHandler):
             
     def _submit_message(self):
         try:
-            print(self.base_url, '\n\n\n\n\n\n\n\n\n')
             # update the message object
             body = self.body
             admin = Admin(self.message_board)

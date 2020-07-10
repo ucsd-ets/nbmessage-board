@@ -1,7 +1,7 @@
-import os
-import sys, os
+import sys, os, pkg_resources
 from .etc import Config, STATIC_DIR
-__version__ = '0.1.0'
+
+version = pkg_resources.require("MyProject")[0].version
 
 config = Config()
 _config = config.config

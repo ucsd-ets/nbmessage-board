@@ -262,7 +262,6 @@ define(['jquery', 'base/js/utils', './bootstrap-datepicker', 'require'], functio
                 $(rawFormData).each(function(index, obj){
                     formData[obj.name] = obj.value;
                 });
-                console.log('formData', formData);
 
                 $('.modal-body').empty();
                 $('.modal-body').append(`<p class="alert alert-warning">Are you sure you want to delete message ID = ${formData.message_id}?</p>`);
