@@ -198,6 +198,7 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
 
         // set the tab title, everything must take place once the tab is established
         $.get(utils.get_body_data('baseUrl') + 'nbmessage/admin', function(data) {
+            console.log(utils.get_body_data('baseUrl'), '\n\n\n\n\n');
             var messageState = new MessageState();
             var title = JSON.parse(data);
             $('#tabs').append(`<li ><a href="#nbmessages" id="nbmessages-tab" data-toggle="tab">${title}</a></li>`)

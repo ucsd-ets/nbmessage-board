@@ -30,7 +30,7 @@ def get_data_files():
 
 setuptools.setup(
     name="nbmessages",
-    version='0.0.7',
+    version='0.0.8',
     url="https://github.com/ucsd-ets/nbmessages",
     author="Wesley Uykimpang",
     description="Post messages in a jupyter notebook to other users",
