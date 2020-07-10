@@ -13,6 +13,7 @@ COPY . /opt/nbmessages
 WORKDIR /opt/nbmessages
 
 # install nbmessages
+RUN rm -rf build dist
 RUN python3 setup.py bdist_wheel
 RUN pip install dist/*.whl
 

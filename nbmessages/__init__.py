@@ -1,7 +1,7 @@
 import sys, os, pkg_resources
 from .etc import Config, STATIC_DIR
 
-version = pkg_resources.require("MyProject")[0].version
+version = pkg_resources.require("nbmessages")[0].version
 
 config = Config()
 _config = config.config
