@@ -38,7 +38,7 @@ def decorate_message(html, author, timestamp, base_url, color_scheme='nbmessage-
                 <p class="{color_scheme}"><i id="timestamp">{timestamp}</i></p>
             </div>
             <div class="col-xs-2 nbmessage-thumbnail">
-                <img src="{os.path.join(base_url, 'nbmessage/images/ucsd-0.png')}" class="img-fluid img-thumbnail" alt="...">
+                <img id="nbmessage-thumbnail-img" src="{os.path.join(base_url, 'nbmessage/images/ucsd-0.png')}" class="img-fluid img-thumbnail" alt="...">
             </div>
             <div class="col-xs-8" style="padding-top: .3em">
                 <h5 class="user-fmt {color_scheme}"><strong>{author}</strong></h5>

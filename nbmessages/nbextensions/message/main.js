@@ -55,9 +55,12 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                 // only update the html if doesn't match and remove old/append new message
                 if (that.messagesHTML !== data.html) {
                     that.messagesHTML = data.html;
+
                     $('#nbmessage-messages').empty();
                     $('#nbmessage-messages').append(that.messagesHTML);
-                }
+                    // FIXME this rewrite
+                    $('#nbmessage-thumbnail-img').attr('src', utils.get_body_data('baseUrl') + 'nbmessage/images/ucsd-0.png');
+                }   
             }).fail(function() { })
             .catch(function(e) { });
         }
@@ -202,6 +205,8 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             var title = JSON.parse(data);
             $('#tabs').append(`<li ><a href="#nbmessages" id="nbmessages-tab" data-toggle="tab">${title}</a></li>`)
             $('.tab-content').append(tabContent);
+
+           
 
             // set listener on tab click
             $('#nbmessages-tab').click(function() {

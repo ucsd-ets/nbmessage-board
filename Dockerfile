@@ -49,6 +49,4 @@ RUN useradd -u 1003 -ms /bin/bash user3
 RUN chown -R 1000:1000 /home/jovyan
 RUN chmod -R 777 /home/jovyan
 
-
-
 ENV START "/opt/conda/bin/jupyter notebook --ip 0.0.0.0 --allow-root --NotebookApp.token=''"
