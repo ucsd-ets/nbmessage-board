@@ -28,7 +28,7 @@ class BaseAcceptanceTester(unittest.TestCase):
         os.system(f'chown -R 1000:1000 {APPLICATION_DATA_DIR}')
         os.system(f'chmod -R 0755 {APPLICATION_DATA_DIR}')
         os.seteuid(1000)
-        self.proc = subprocess.Popen(['jupyter', 'notebook', '--ip', '0.0.0.0', '--NotebookApp.token=""'])
+        self.launch_notebook_proc()
         self.driver = get_driver()
         
         # FIXME make this better to wait for the server to start
@@ -45,7 +45,10 @@ class BaseAcceptanceTester(unittest.TestCase):
         os.seteuid(0)
         self.proc.terminate()
         os.system(f'rm -rf {APPLICATION_DATA_DIR}/mboard {APPLICATION_DATA_DIR}/test')
-
+    
+    def launch_notebook_proc(self, default=['jupyter', 'notebook', '--ip', '0.0.0.0', '--NotebookApp.token=""']):
+        self.proc = subprocess.Popen(default)
+    
 ##### HELPER FUNCTIONS
     def navigate_to_admin_tab(self):
         admin_tab = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.LINK_TEXT, 'nbmessages (Admin)')))

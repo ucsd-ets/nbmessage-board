@@ -4,7 +4,7 @@ FROM jupyter/datascience-notebook:latest
 
 USER root
 
-RUN mkdir -p /srv/nbmessages
+RUN mkdir -p /srv/nbmessages/admin
 # for testing, only root can modify both message boards (at least by default)
 RUN chmod -R 0755 /srv/nbmessages
 

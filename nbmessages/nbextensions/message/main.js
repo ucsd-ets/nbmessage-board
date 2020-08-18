@@ -60,6 +60,9 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                     $('#nbmessage-messages').append(that.messagesHTML);
                     // FIXME this rewrite
                     $('#nbmessage-thumbnail-img').attr('src', utils.get_body_data('baseUrl') + 'nbmessage/images/ucsd-0.png');
+
+                    // FIXME in case the id doesnt get in
+                    $('.img-thumbnail').attr('src', utils.get_body_data('baseUrl') + '/nbmessage/images/ucsd-0.png')
                 }   
             }).fail(function() { })
             .catch(function(e) { });
