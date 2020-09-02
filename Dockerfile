@@ -17,6 +17,8 @@ RUN rm -rf build dist
 RUN python3 setup.py bdist_wheel
 RUN pip install dist/*.whl
 
+RUN pip install twine
+
 RUN jupyter serverextension enable --sys-prefix --py nbmessages
 RUN jupyter nbextension install --sys-prefix --py nbmessages
 RUN jupyter nbextension enable --user message/main --section=tree

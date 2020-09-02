@@ -62,6 +62,11 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
                     // FIXME dynamic path needs to go somewhere, maybe not here
                     var path = utils.get_body_data('baseUrl');
                     var imgPath = path + 'nbmessage/images/ucsd-0.png';
+
+                    if (!imgPath.startsWith('/')) {
+                        imgPath = '/' + imgPath;
+                    }
+
                     $('.img-thumbnail').attr('src', imgPath)
                 }   
             }).fail(function() { })
