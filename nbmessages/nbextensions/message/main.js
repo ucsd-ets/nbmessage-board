@@ -222,10 +222,10 @@ define(['jquery', 'base/js/utils', 'require'], function ($, utils, require) {
             });
             var messageBoardPill = new MessageBoardsPill(messageState);
             var messages = new Messages();
-            var notification = new Notification(messageState);
+            // var notification = new Notification(messageState);
 
             messageState.registerStateListener(messages);
-            messageState.registerStateListener(notification);
+            // messageState.registerStateListener(notification);
 
         }).fail(function() {});
     };
